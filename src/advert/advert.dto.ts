@@ -1,12 +1,30 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsInt, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsInt, IsNumber, IsString } from 'class-validator';
+import { EAdvertContractType, EAdvertType } from './advert.enum';
+import { Agent } from '../agent/agent.entity';
 
 export class CreateAdvertDto {
   @IsString()
   @ApiModelProperty()
-  readonly name: string;
+  readonly title: string;
+
+  @IsEnum(EAdvertType)
+  @ApiModelProperty()
+  readonly type: string;
+
+  @IsEnum(EAdvertContractType)
+  @ApiModelProperty()
+  readonly contractType: string;
+
+  @IsNumber()
+  @ApiModelProperty()
+  readonly constructionDate: number;
+
+  @IsNumber()
+  @ApiModelProperty()
+  readonly price: number;
 
   @IsInt()
   @ApiModelProperty()
-  readonly agentId: number;
+  readonly agent: Agent;
 }

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Advert, CreateAdvertDto } from './advert.entity';
+import { Advert } from './advert.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { IApiResult, IApiResultCreate } from '../interface/api.interface';
 import { EApiErrorCode } from '../enum/api.enum';
 import { QueryPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
-import { validate } from "class-validator";
+import { CreateAdvertDto } from './advert.dto';
 
 @Injectable()
 export class AdvertService {

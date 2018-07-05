@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable, JoinColumn } from 'typeorm';
 import { Agent } from '../agent/agent.entity';
 
 @Entity()
@@ -7,8 +7,21 @@ export class Advert {
   id: number;
 
   @Column()
-  name: string;
+  title: string;
+
+  @Column()
+  type: string;
+
+  @Column()
+  contractType: string;
+
+  @Column()
+  constructionDate: number;
+
+  @Column()
+  price: number;
 
   @ManyToOne(type => Agent)
-  agentId: number;
+  @JoinColumn()
+  agent: Agent;
 }
