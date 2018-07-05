@@ -1,7 +1,9 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './logger.middleware';
-import { ObjectItemModule } from './object-item/object-item.module';
+import { AdvertModule } from './object-item/advert.module';
+import { DummyModule } from './dummy/dummy.module';
+import { AgentModule } from './agent/agent.module';
 
 @Module({
   imports: [
@@ -15,7 +17,9 @@ import { ObjectItemModule } from './object-item/object-item.module';
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    ObjectItemModule,
+    AdvertModule,
+    AgentModule,
+    DummyModule,
   ],
 })
 export class ApplicationModule implements NestModule {
