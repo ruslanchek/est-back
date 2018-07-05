@@ -1,7 +1,7 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './logger.middleware';
-import { AdvertModule } from './object-item/advert.module';
+import { AdvertModule } from './advert/advert.module';
 import { DummyModule } from './dummy/dummy.module';
 import { AgentModule } from './agent/agent.module';
 
@@ -9,9 +9,9 @@ import { AgentModule } from './agent/agent.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '127.0.0.1',
+      host: '173.194.224.171',
       port: 3306,
-      username: 'root',
+      username: 'realthub',
       password: 'Tukzara2044',
       database: 'realthub',
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
