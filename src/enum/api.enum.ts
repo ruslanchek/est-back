@@ -1,3 +1,4 @@
 export enum EApiErrorCode {
   INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
+  IS_REQUIRED = 'IS_REQUIRED',
 }

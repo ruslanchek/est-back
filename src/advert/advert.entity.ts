@@ -10,5 +10,5 @@ export class Advert {
   name: string;
 
   @ManyToOne(type => Agent)
-  agent: Agent;
+  agentId: number;
 }

@@ -4,11 +4,11 @@ import { Dummy } from './dummy.entity';
 
 @Controller('/api/dummy')
 export class DummyController {
-  constructor(private readonly agentService: DummyService) {
+  constructor(private readonly dummyService: DummyService) {
   }
 
   @Get()
   async root(): Promise<Dummy[]> {
-    return await this.agentService.findAll();
+    return await this.dummyService.findAll();
   }
 }

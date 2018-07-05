@@ -1604,6 +1604,10 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
+class-transformer@^0.1.9:
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/class-transformer/-/class-transformer-0.1.9.tgz#29977c528233ca014e6fd9523327ebd31d11ca54"
+
 class-utils@^0.3.5:
   version "0.3.6"
   resolved "https://npmjs.eoadm.com/class-utils/-/class-utils-0.3.6.tgz#f93369ae8b9a7ce02fd41faad0ca83033190c463"
@@ -1612,6 +1616,12 @@ class-utils@^0.3.5:
     define-property "^0.2.5"
     isobject "^3.0.0"
     static-extend "^0.1.1"
+
+class-validator@^0.8.5:
+  version "0.8.5"
+  resolved "https://registry.yarnpkg.com/class-validator/-/class-validator-0.8.5.tgz#484785acda98f68549c3a84dc1bb2f77b736dc58"
+  dependencies:
+    validator "9.2.0"
 
 cli-boxes@^1.0.0:
   version "1.0.0"
@@ -6622,6 +6632,10 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+validator@9.2.0:
+  version "9.2.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-9.2.0.tgz#ad216eed5f37cac31a6fe00ceab1f6b88bded03e"
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"

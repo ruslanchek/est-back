@@ -4,4 +4,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 export class Agent {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  name: string;
 }
