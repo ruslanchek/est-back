@@ -4,8 +4,10 @@ import { Agent } from '../agent/agent.entity';
 @Entity()
 export class Advert {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
-  @ManyToOne(type => Agent)
-  agent: Agent;
+  name: string;
+
+  // @ManyToOne(type => Agent)
+  // agent: Agent;
 }

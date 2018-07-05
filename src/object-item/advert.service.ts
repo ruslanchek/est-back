@@ -8,9 +8,14 @@ export class AdvertService {
   constructor(
     @InjectRepository(Advert)
     private readonly advertServiceRepository: Repository<Advert>,
-  ) {}
+  ) {
+  }
 
   async findAll(): Promise<Advert[]> {
     return await this.advertServiceRepository.find();
+  }
+
+  async add(advert: Advert): Promise<Advert> {
+    return await this.advertServiceRepository.create(advert);
   }
 }
