@@ -1,9 +1,9 @@
 import { Get, Controller, Body, Post, Param } from '@nestjs/common';
 import { AgentService } from './agent.service';
 import { Agent } from './agent.entity';
-import { IApiResult, IApiResultCreate, IApiResultList, IApiReultOne } from '../interface/api.interface';
 import { CreateAgentDto } from './agent.dto';
 import { ValidationPipe } from '../validation.pipe';
+import { IApiResult, IApiResultCreate, IApiResultList, IApiReultOne } from '../api';
 
 @Controller('/api/agent')
 export class AgentController {
