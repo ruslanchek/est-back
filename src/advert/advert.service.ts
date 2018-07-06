@@ -42,8 +42,8 @@ export class AdvertService {
     });
   }
 
-  public async insert(advert: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
-    const result: InsertResult = await this.advertServiceRepository.insert(advert as QueryPartialEntity<Advert>);
+  public async insert(dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
+    const result: InsertResult = await this.advertServiceRepository.insert(dto);
 
     if (result && result.identifiers && result.identifiers[0] && result.identifiers[0].id) {
       return Api.result<IApiResultCreate>({
@@ -56,11 +56,11 @@ export class AdvertService {
     }
   }
 
-  public async update(id: number, advert: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
+  public async update(id: number, dto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
     const findResult: Advert = await this.advertServiceRepository.findOne(id);
 
     if (findResult) {
-      const saveResult: Advert = await this.advertServiceRepository.save(Object.assign(findResult, advert));
+      await this.advertServiceRepository.save(Object.assign(findResult, dto));
       const findNewResult: Advert = await this.advertServiceRepository.findOne(id, {
         relations: ['agent'],
       });

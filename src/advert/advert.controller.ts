@@ -21,12 +21,12 @@ export class AdvertController {
   }
 
   @Post()
-  async create(@Body(new ValidationPipe()) createAdvertDto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
-    return await this.advertService.insert(createAdvertDto);
+  async create(@Body(new ValidationPipe()) dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
+    return await this.advertService.insert(dto);
   }
 
   @Patch(':id')
-  async update(@Param() params, @Body(new ValidationPipe()) updateAdvertDto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
-    return await this.advertService.update(params.id, updateAdvertDto);
+  async update(@Param() params, @Body(new ValidationPipe()) dto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
+    return await this.advertService.update(params.id, dto);
   }
 }
