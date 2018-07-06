@@ -24,7 +24,7 @@ export class AgentService {
   }
 
   async findOne(id: number): Promise<IApiResult<IApiResultOne<Agent>>> {
-    const entity: Advert = await this.agentServiceRepository.findOne(id);
+    const entity: Agent = await this.agentServiceRepository.findOne(id);
 
     if (entity) {
       return Api.result<IApiResultOne<Agent>>({
