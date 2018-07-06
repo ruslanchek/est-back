@@ -2,7 +2,6 @@ import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './logger.middleware';
 import { AdvertModule } from './advert/advert.module';
-import { DummyModule } from './dummy/dummy.module';
 import { AgentModule } from './agent/agent.module';
 
 @Module({

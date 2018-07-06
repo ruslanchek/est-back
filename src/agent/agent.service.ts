@@ -6,6 +6,7 @@ import { QueryPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { CreateAgentDto } from './agent.dto';
 import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
+import { Advert } from '../advert/advert.entity';
 
 @Injectable()
 export class AgentService {
@@ -24,11 +25,17 @@ export class AgentService {
   }
 
   async findOne(id: number): Promise<IApiResult<IApiResultOne<Agent>>> {
-    const entity: Agent = await this.agentServiceRepository.findOne(id);
+    const entity: Advert = await this.agentServiceRepository.findOne(id);
 
-    return Api.result<IApiResultOne<Agent>>({
-      entity,
-    });
+    if (entity) {
+      return Api.result<IApiResultOne<Agent>>({
+        entity,
+      });
+    } else {
+      Api.error(HttpStatus.NOT_FOUND, {
+        code: EApiErrorCode.ENTRY_NOT_FOUND,
+      });
+    }
   }
 
   public async insert(agent: CreateAgentDto): Promise<IApiResult<IApiResultCreate>> {

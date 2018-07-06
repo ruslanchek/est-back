@@ -56,14 +56,16 @@ export class UpdateAdvertDto {
   @IsEnum(EAdvertType)
   @IsOptional()
   @ApiModelProperty({
-    required: false,
+    required: true,
+    enum: EAdvertType,
   })
   readonly type: string;
 
   @IsEnum(EAdvertContractType)
   @IsOptional()
   @ApiModelProperty({
-    required: false,
+    required: true,
+    enum: EAdvertContractType,
   })
   readonly contractType: string;
 
