@@ -16,7 +16,7 @@ export class ValidationPipe implements PipeTransform<any> {
       const errorPayload = errors.map(error => {
         return {
           field: error.property,
-          type: error.value,
+          value: error.value,
           messages: error.constraints,
         };
       });
