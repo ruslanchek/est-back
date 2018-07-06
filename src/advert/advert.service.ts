@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Advert } from './advert.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { QueryPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
-import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiResultUpdate, IApiReultOne } from '../api';
+import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiResultUpdate, IApiResultOne } from '../api';
 import { UpdateResult } from 'typeorm/query-builder/result/UpdateResult';
 
 @Injectable()
@@ -16,14 +16,20 @@ export class AdvertService {
   ) {
   }
 
-  public async findOne(id: number): Promise<IApiResult<IApiReultOne<Advert>>> {
+  public async findOne(id: number): Promise<IApiResult<IApiResultOne<Advert>>> {
     const entity: Advert = await this.advertServiceRepository.findOne(id, {
       relations: ['agent'],
     });
 
-    return Api.result<IApiReultOne<Advert>>({
-      entity,
-    });
+    if (entity) {
+      return Api.result<IApiResultOne<Advert>>({
+        entity,
+      });
+    } else {
+      Api.error(HttpStatus.NOT_FOUND, {
+        code: EApiErrorCode.ENTRY_NOT_FOUND,
+      });
+    }
   }
 
   public async findAll(): Promise<IApiResult<IApiResultList<Advert>>> {
@@ -44,19 +50,25 @@ export class AdvertService {
         id: result.identifiers[0].id,
       });
     } else {
-      Api.error({
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
+      Api.error(HttpStatus.BAD_REQUEST, {
+        code: EApiErrorCode.BAD_REQUEST,
       });
     }
   }
 
-  public async update(advert: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
-    const result: UpdateResult = await this.advertServiceRepository.update(advert.id, advert);
-
-    console.log(result);
-
-    return Api.result<IApiResultUpdate>({
-      id: 1111,
+  public async update(id: number, advert: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
+    const findResult: Advert = await this.advertServiceRepository.findOne(id, {
+      relations: ['agent'],
     });
+
+    if (findResult) {
+      const saveResult: Advert = await this.advertServiceRepository.save(findResult);
+
+      return Api.result<IApiResultUpdate>(saveResult);
+    } else {
+      Api.error(HttpStatus.NOT_FOUND, {
+        code: EApiErrorCode.ENTRY_NOT_FOUND,
+      });
+    }
   }
 }

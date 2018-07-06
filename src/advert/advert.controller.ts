@@ -3,7 +3,7 @@ import { AdvertService } from './advert.service';
 import { Advert } from './advert.entity';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
 import { ValidationPipe } from '../validation.pipe';
-import { IApiResult, IApiResultCreate, IApiResultList, IApiResultUpdate, IApiReultOne } from '../api';
+import { IApiResult, IApiResultCreate, IApiResultList, IApiResultUpdate, IApiResultOne } from '../api';
 
 @Controller('/api/advert')
 export class AdvertController {
@@ -16,7 +16,7 @@ export class AdvertController {
   }
 
   @Get(':id')
-  async findOne(@Param() params): Promise<IApiResult<IApiReultOne<Advert>>> {
+  async findOne(@Param() params): Promise<IApiResult<IApiResultOne<Advert>>> {
     return await this.advertService.findOne(params.id);
   }
 
@@ -25,8 +25,8 @@ export class AdvertController {
     return await this.advertService.insert(createAdvertDto);
   }
 
-  @Patch()
-  async update(@Body(new ValidationPipe()) updateAdvertDto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
-    return await this.advertService.update(updateAdvertDto);
+  @Patch(':id')
+  async update(@Param() params, @Body(new ValidationPipe()) updateAdvertDto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
+    return await this.advertService.update(params.id, updateAdvertDto);
   }
 }

@@ -9,7 +9,7 @@ import { AgentModule } from './agent/agent.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '173.194.224.171',
+      host: '138.197.185.147',
       port: 3306,
       username: 'realthub',
       password: 'Tukzara2044',

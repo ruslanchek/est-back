@@ -16,7 +16,7 @@ export class CreateAdvertDto {
   @ApiModelProperty()
   readonly contractType: string;
 
-  @IsNumber()
+  @IsInt()
   @IsOptional()
   @ApiModelProperty()
   readonly constructionDate: number;
@@ -31,10 +31,6 @@ export class CreateAdvertDto {
 }
 
 export class UpdateAdvertDto {
-  @IsNumber()
-  @ApiModelProperty()
-  readonly id: number;
-
   @IsString()
   @IsOptional()
   @ApiModelProperty()
@@ -50,7 +46,7 @@ export class UpdateAdvertDto {
   @ApiModelProperty()
   readonly contractType: string;
 
-  @IsNumber()
+  @IsInt()
   @IsOptional()
   @ApiModelProperty()
   readonly constructionDate: number;

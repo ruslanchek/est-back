@@ -3,7 +3,7 @@ import { AgentService } from './agent.service';
 import { Agent } from './agent.entity';
 import { CreateAgentDto } from './agent.dto';
 import { ValidationPipe } from '../validation.pipe';
-import { IApiResult, IApiResultCreate, IApiResultList, IApiReultOne } from '../api';
+import { IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
 
 @Controller('/api/agent')
 export class AgentController {
@@ -16,7 +16,7 @@ export class AgentController {
   }
 
   @Get(':id')
-  async findOne(@Param() params): Promise<IApiResult<IApiReultOne<Agent>>> {
+  async findOne(@Param() params): Promise<IApiResult<IApiResultOne<Agent>>> {
     return await this.agentService.findOne(params.id);
   }
 

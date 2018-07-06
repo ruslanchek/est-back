@@ -1,4 +1,4 @@
-import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException, HttpException } from '@nestjs/common';
+import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { Api, EApiErrorCode } from './api';
@@ -21,7 +21,7 @@ export class ValidationPipe implements PipeTransform<any> {
         };
       });
 
-      Api.error({
+      Api.error(HttpStatus.BAD_REQUEST, {
         code: EApiErrorCode.VALIDATION_ERROR,
         details: errorPayload,
       });

@@ -15,10 +15,10 @@ export class Advert {
   @Column()
   contractType: string;
 
-  @Column()
+  @Column('double')
   constructionDate: number;
 
-  @Column()
+  @Column('double')
   price: number;
 
   @ManyToOne(type => Agent, agent => agent.adverts)

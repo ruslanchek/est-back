@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Agent } from './agent.entity';
 import { QueryPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { CreateAgentDto } from './agent.dto';
-import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiReultOne } from '../api';
+import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
 
 @Injectable()
 export class AgentService {
@@ -23,10 +23,10 @@ export class AgentService {
     });
   }
 
-  async findOne(id: number): Promise<IApiResult<IApiReultOne<Agent>>> {
+  async findOne(id: number): Promise<IApiResult<IApiResultOne<Agent>>> {
     const entity: Agent = await this.agentServiceRepository.findOne(id);
 
-    return Api.result<IApiReultOne<Agent>>({
+    return Api.result<IApiResultOne<Agent>>({
       entity,
     });
   }
@@ -39,8 +39,8 @@ export class AgentService {
         id: result.identifiers[0].id,
       });
     } else {
-      Api.error({
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
+      Api.error(HttpStatus.BAD_REQUEST, {
+        code: EApiErrorCode.BAD_REQUEST,
       });
     }
   }
