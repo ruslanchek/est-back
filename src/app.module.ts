@@ -19,7 +19,6 @@ import { AgentModule } from './agent/agent.module';
     }),
     AdvertModule,
     AgentModule,
-    DummyModule,
   ],
 })
 export class ApplicationModule implements NestModule {
