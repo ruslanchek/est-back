@@ -7,15 +7,12 @@ import { IApiResult, IApiResultCreate, IApiResultList } from '../interface/api.i
 import { EApiErrorCode } from '../enum/api.enum';
 import { QueryPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { CreateAdvertDto } from './advert.dto';
-import { Agent } from '../agent/agent.entity';
 
 @Injectable()
 export class AdvertService {
   constructor(
     @InjectRepository(Advert)
-    @InjectRepository(Agent)
-    private readonly advertServiceRepository: Repository<Advert>,
-    private readonly agentServiceRepository: Repository<Agent>,
+    private readonly advertServiceRepository: Repository<Advert>
   ) {
   }
 
