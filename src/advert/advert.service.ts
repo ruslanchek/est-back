@@ -57,14 +57,15 @@ export class AdvertService {
   }
 
   public async update(id: number, advert: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
-    const findResult: Advert = await this.advertServiceRepository.findOne(id, {
-      relations: ['agent'],
-    });
+    const findResult: Advert = await this.advertServiceRepository.findOne(id);
 
     if (findResult) {
-      const saveResult: Advert = await this.advertServiceRepository.save(findResult);
+      const saveResult: Advert = await this.advertServiceRepository.save(Object.assign(findResult, advert));
+      const findNewResult: Advert = await this.advertServiceRepository.findOne(id, {
+        relations: ['agent'],
+      });
 
-      return Api.result<IApiResultUpdate>(saveResult);
+      return Api.result<IApiResultUpdate>(findNewResult);
     } else {
       Api.error(HttpStatus.NOT_FOUND, {
         code: EApiErrorCode.ENTRY_NOT_FOUND,
