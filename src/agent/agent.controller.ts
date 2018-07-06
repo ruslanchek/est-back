@@ -1,7 +1,7 @@
-import { Get, Controller, Body, Post } from '@nestjs/common';
+import { Get, Controller, Body, Post, Param } from '@nestjs/common';
 import { AgentService } from './agent.service';
 import { Agent } from './agent.entity';
-import { IApiResult, IApiResultCreate } from '../interface/api.interface';
+import { IApiResult, IApiResultCreate, IApiResultList, IApiReultOne } from '../interface/api.interface';
 import { CreateAgentDto } from './agent.dto';
 import { ValidationPipe } from '../validation.pipe';
 
@@ -11,8 +11,13 @@ export class AgentController {
   }
 
   @Get()
-  async root(): Promise<Agent[]> {
+  async list(): Promise<IApiResult<IApiResultList<Agent>>> {
     return await this.agentService.findAll();
+  }
+
+  @Get(':id')
+  async findOne(@Param() params): Promise<IApiResult<IApiReultOne<Agent>>> {
+    return await this.agentService.findOne(params.id);
   }
 
   @Post()

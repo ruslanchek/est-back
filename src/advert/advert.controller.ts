@@ -1,7 +1,7 @@
 import { Get, Controller, Query, Post, HttpStatus, HttpException, Body } from '@nestjs/common';
 import { AdvertService } from './advert.service';
 import { Advert } from './advert.entity';
-import { IApiResult, IApiResultCreate } from '../interface/api.interface';
+import { IApiResult, IApiResultCreate, IApiResultList } from '../interface/api.interface';
 import { CreateAdvertDto } from './advert.dto';
 import { ValidationPipe } from '../validation.pipe';
 
@@ -11,7 +11,7 @@ export class AdvertController {
   }
 
   @Get()
-  async list(): Promise<Advert[]> {
+  async list(): Promise<IApiResult<IApiResultList<Advert>>> {
     return await this.advertService.findAll();
   }
 

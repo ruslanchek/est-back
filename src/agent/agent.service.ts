@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Agent, CreateAgentDto } from './agent.entity';
+import { Agent } from './agent.entity';
 import { QueryPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { EApiErrorCode } from '../enum/api.enum';
-import { IApiResult, IApiResultCreate } from '../interface/api.interface';
-import { Advert, CreateAdvertDto } from '../advert/advert.entity';
+import { IApiResult, IApiResultCreate, IApiResultList, IApiReultOne } from '../interface/api.interface';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
+import { CreateAgentDto } from './agent.dto';
 
 @Injectable()
 export class AgentService {
@@ -16,8 +16,26 @@ export class AgentService {
   ) {
   }
 
-  async findAll(): Promise<Agent[]> {
-    return await this.agentServiceRepository.find();
+  async findAll(): Promise<IApiResult<IApiResultList<Agent>>> {
+    const list: Agent[] = await this.agentServiceRepository.find();
+
+    return {
+      payload: {
+        list,
+      },
+      error: null,
+    };
+  }
+
+  async findOne(id: number): Promise<IApiResult<IApiReultOne<Agent>>> {
+    const agent: Agent = await this.agentServiceRepository.findOne(id);
+
+    return {
+      payload: {
+        entity: agent,
+      },
+      error: null,
+    };
   }
 
   public async insert(agent: CreateAgentDto): Promise<IApiResult<IApiResultCreate>> {

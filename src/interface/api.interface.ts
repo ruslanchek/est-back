@@ -12,3 +12,11 @@ export interface IApiResultError {
 export interface IApiResultCreate {
   id: number;
 }
+
+export interface IApiResultList<Entity> {
+  list: Entity[];
+}
+
+export interface IApiReultOne<Entity> {
+  entity: Entity;
+}

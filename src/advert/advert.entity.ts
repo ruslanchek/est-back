@@ -21,7 +21,6 @@ export class Advert {
   @Column()
   price: number;
 
-  @ManyToOne(type => Agent)
-  @JoinColumn()
+  @ManyToOne(type => Agent, agent => agent.adverts)
   agent: Agent;
 }
