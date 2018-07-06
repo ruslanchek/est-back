@@ -2,7 +2,6 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Agent } from './agent.entity';
-import { QueryPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { CreateAgentDto, UpdateAgentDto } from './agent.dto';
 import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne, IApiResultUpdate } from '../api';
