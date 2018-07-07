@@ -2,9 +2,12 @@ import * as jwt from 'jsonwebtoken';
 import { Injectable } from '@nestjs/common';
 import { AUTH_POLICY } from './auth.policy';
 import { IJwtPayload } from './auth.interface';
+import { AgentService } from '../agent/agent.service';
 
 @Injectable()
 export class AuthService {
+  constructor(private readonly usersService: AgentService) { }
+
   async createToken() {
     const payload: IJwtPayload = {
       email: 'test@email1.com',
@@ -22,8 +25,8 @@ export class AuthService {
   }
 
   async validateUser(payload: IJwtPayload): Promise<any> {
-    // put some validation logic here
-    // for example query user by id/email/username
-    return {};
+    const agent = await this.usersService.findOneByEmail(payload.email);
+
+    return agent;
   }
 }

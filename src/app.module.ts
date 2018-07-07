@@ -17,9 +17,9 @@ import { AuthModule } from './auth/auth.module';
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    AuthModule,
     AdvertModule,
     AgentModule,
+    AuthModule,
   ],
 })
 export class ApplicationModule implements NestModule {
