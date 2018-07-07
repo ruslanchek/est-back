@@ -1,4 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { ITokenPayload } from './auth/auth.interface';
 
 export interface IApiResult<Payload> {
   payload: Payload;
