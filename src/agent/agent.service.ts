@@ -36,6 +36,22 @@ export class AgentService {
     }
   }
 
+  async findOneByEmail(email: string): Promise<IApiResult<IApiResultOne<Agent>>> {
+    const entity: Agent = await this.agentServiceRepository.findOne({
+      email,
+    });
+
+    if (entity) {
+      return Api.result<IApiResultOne<Agent>>({
+        entity,
+      });
+    } else {
+      Api.error(HttpStatus.NOT_FOUND, {
+        code: EApiErrorCode.ENTRY_NOT_FOUND,
+      });
+    }
+  }
+
   public async insert(dto: CreateAgentDto): Promise<IApiResult<IApiResultCreate>> {
     const result: InsertResult = await this.agentServiceRepository.insert(dto);
 

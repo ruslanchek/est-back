@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Advert } from '../advert/advert.entity';
-import { EAgentType } from './agent.enum';
 
 @Entity()
 export class Agent {
@@ -9,6 +8,15 @@ export class Agent {
 
   @Column()
   name: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  password: string;
+
+  @Column()
+  phone: string;
 
   @Column()
   type: string;

@@ -2,7 +2,6 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsDate, IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EAdvertContractType, EAdvertType } from './advert.enum';
 import { Agent } from '../agent/agent.entity';
-import { SwaggerEnumType } from '@nestjs/swagger/dist/types/swagger-enum.type';
 
 export class CreateAdvertDto {
   @IsString()

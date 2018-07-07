@@ -13,6 +13,24 @@ export class CreateAgentDto {
     enum: EAgentType,
   })
   readonly type: string;
+
+  @IsString()
+  @ApiModelProperty({
+    required: true,
+  })
+  readonly email: string;
+
+  @IsString()
+  @ApiModelProperty({
+    required: true,
+  })
+  readonly password: string;
+
+  @IsString()
+  @ApiModelProperty({
+    required: false,
+  })
+  readonly phone: string;
 }
 
 export class UpdateAgentDto {
@@ -27,4 +45,27 @@ export class UpdateAgentDto {
     enum: EAgentType,
   })
   readonly type: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiModelProperty({
+    required: false,
+  })
+  readonly phone: string;
+}
+
+export class UpdateAgentPasswordDto {
+  @IsString()
+  @ApiModelProperty({
+    required: true,
+  })
+  readonly password: string;
+}
+
+export class UpdateAgentEmailDto {
+  @IsString()
+  @ApiModelProperty({
+    required: true,
+  })
+  readonly email: string;
 }

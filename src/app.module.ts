@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerMiddleware } from './logger.middleware';
 import { AdvertModule } from './advert/advert.module';
 import { AgentModule } from './agent/agent.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
