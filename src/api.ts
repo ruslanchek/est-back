@@ -32,6 +32,7 @@ export enum EApiErrorCode {
   ENTRY_NOT_FOUND = 'ENTRY_NOT_FOUND',
   BAD_REQUEST = 'BAD_REQUEST',
   NOT_AUTHORIZED = 'NOT_AUTHORIZED',
+  CONFLICT = 'CONFLICT',
 }
 
 export class Api {

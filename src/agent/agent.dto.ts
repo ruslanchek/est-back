@@ -2,37 +2,6 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 import { EAgentType } from './agent.enum';
 
-export class CreateAgentDto {
-  @IsString()
-  @ApiModelProperty()
-  readonly name: string;
-
-  @IsEnum(EAgentType)
-  @ApiModelProperty({
-    required: true,
-    enum: EAgentType,
-  })
-  readonly type: string;
-
-  @IsString()
-  @ApiModelProperty({
-    required: true,
-  })
-  readonly email: string;
-
-  @IsString()
-  @ApiModelProperty({
-    required: true,
-  })
-  readonly password: string;
-
-  @IsString()
-  @ApiModelProperty({
-    required: false,
-  })
-  readonly phone: string;
-}
-
 export class UpdateAgentDto {
   @IsString()
   @ApiModelProperty()
@@ -70,21 +39,7 @@ export class UpdateAgentEmailDto {
   readonly email: string;
 }
 
-export class LoginAgentDto {
-  @IsString()
-  @ApiModelProperty({
-    required: true,
-  })
-  readonly email: string;
-
-  @IsString()
-  @ApiModelProperty({
-    required: true,
-  })
-  readonly password: string;
-}
-
-export class RegisterAgentDto {
+export class AuthAgentDto {
   @IsString()
   @ApiModelProperty({
     required: true,

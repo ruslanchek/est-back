@@ -5,7 +5,7 @@ import { IJwtPayload, ITokenPayload } from './auth.interface';
 import { AgentService } from '../agent/agent.service';
 import { Api, EApiErrorCode, IApiResult, IApiResultOne } from '../api';
 import { Agent } from '../agent/agent.entity';
-import { LoginAgentDto, UpdateAgentDto } from '../agent/agent.dto';
+import { AuthAgentDto } from '../agent/agent.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,12 +27,12 @@ export class AuthService {
     return await this.usersService.findOne(payload.id);
   }
 
-  async login(dto: LoginAgentDto): Promise<IApiResult<ITokenPayload>> {
+  async login(dto: AuthAgentDto): Promise<IApiResult<ITokenPayload>> {
     const entity = await this.usersService.findOneByEmailAndPassword(dto.email, dto.password);
 
     if (entity) {
       const tokenPayload: ITokenPayload = await this.createToken({
-        id: entity.payload.entity.id,
+        id: entity.id,
       });
 
       return Api.result<ITokenPayload>(tokenPayload);
@@ -40,6 +40,23 @@ export class AuthService {
       return Api.error<ITokenPayload>(HttpStatus.FORBIDDEN, {
         code: EApiErrorCode.NOT_AUTHORIZED,
       });
+    }
+  }
+
+  async register(dto: AuthAgentDto): Promise<IApiResult<ITokenPayload>> {
+    const entityFound = await this.usersService.findOneByEmail(dto.email);
+
+    if (entityFound) {
+      return Api.error<ITokenPayload>(HttpStatus.CONFLICT, {
+        code: EApiErrorCode.CONFLICT,
+      });
+    } else {
+      const entityNew = await this.usersService.insert(dto);
+      const tokenPayload = await this.createToken({
+        id: entityNew.id,
+      });
+
+      return Api.result<ITokenPayload>(tokenPayload);
     }
   }
 }
