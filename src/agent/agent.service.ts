@@ -5,6 +5,7 @@ import { Agent } from './agent.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { AuthAgentDto, UpdateAgentDto } from './agent.dto';
 import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne, IApiResultUpdate } from '../api';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AgentService {
@@ -65,7 +66,10 @@ export class AgentService {
   }
 
   public async insert(dto: AuthAgentDto): Promise<IApiResultCreate> {
-    const result: InsertResult = await this.agentServiceRepository.insert(dto);
+    const hashedPassword: string = await bcrypt.hash(dto.password, 10);
+    const result: InsertResult = await this.agentServiceRepository.insert(Object.assign(dto, {
+      password: hashedPassword,
+    }));
 
     return {
       id: result.identifiers[0].id,

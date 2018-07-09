@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { AUTH_POLICY } from './auth.policy';
 import { IJwtPayload, ITokenPayload } from './auth.interface';
