@@ -10,7 +10,7 @@ import { AuthAgentDto } from '../agent/agent.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly usersService: AgentService) {
+  constructor(private readonly agentService: AgentService) {
   }
 
   async createToken(payload: IJwtPayload): Promise<ITokenPayload> {
@@ -25,11 +25,11 @@ export class AuthService {
   }
 
   async validateUser(payload: IJwtPayload): Promise<IApiResult<IApiResultOne<Agent>>> {
-    return await this.usersService.findOne(payload.id);
+    return await this.agentService.findOne(payload.id);
   }
 
   async login(dto: AuthAgentDto): Promise<IApiResult<ITokenPayload>> {
-    const entity = await this.usersService.findOneByEmail(dto.email);
+    const entity = await this.agentService.findOneByEmail(dto.email);
 
     if (entity) {
       const passwordChecked: boolean = await bcrypt.compare(dto.password, entity.password);
@@ -53,14 +53,14 @@ export class AuthService {
   }
 
   async register(dto: AuthAgentDto): Promise<IApiResult<ITokenPayload>> {
-    const entityFound = await this.usersService.findOneByEmail(dto.email);
+    const entityFound = await this.agentService.findOneByEmail(dto.email);
 
     if (entityFound) {
       return Api.error<ITokenPayload>(HttpStatus.CONFLICT, {
         code: EApiErrorCode.CONFLICT,
       });
     } else {
-      const entityNew = await this.usersService.insert(dto);
+      const entityNew = await this.agentService.insert(dto);
       const tokenPayload = await this.createToken({
         id: entityNew.id,
       });
