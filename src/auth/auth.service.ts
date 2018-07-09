@@ -42,12 +42,12 @@ export class AuthService {
         return Api.result<ITokenPayload>(tokenPayload);
       } else {
         return Api.error<ITokenPayload>(HttpStatus.FORBIDDEN, {
-          code: EApiErrorCode.NOT_AUTHORIZED,
+          code: EApiErrorCode.UNAUTHORIZED,
         });
       }
     } else {
       return Api.error<ITokenPayload>(HttpStatus.FORBIDDEN, {
-        code: EApiErrorCode.NOT_AUTHORIZED,
+        code: EApiErrorCode.UNAUTHORIZED,
       });
     }
   }
