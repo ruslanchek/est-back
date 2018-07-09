@@ -17,56 +17,86 @@ export class AgentService {
   }
 
   async findAll(): Promise<IApiResult<IApiResultList<Agent>>> {
-    const list: Agent[] = await this.agentServiceRepository.find();
+    try {
+      const list: Agent[] = await this.agentServiceRepository.find();
 
-    return Api.result<IApiResultList<Agent>>({
-      list,
-    });
+      return Api.result<IApiResultList<Agent>>({
+        list,
+      });
+    } catch (e) {
+      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
+        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
+      });
+    }
   }
 
   async findOne(id: number): Promise<IApiResult<IApiResultOne<Agent>>> {
-    const entity: Agent = await this.agentServiceRepository.findOne(id);
+    try {
+      const entity: Agent = await this.agentServiceRepository.findOne(id);
 
-    if (entity) {
-      return Api.result<IApiResultOne<Agent>>({
-        entity,
-      });
-    } else {
-      Api.error(HttpStatus.NOT_FOUND, {
-        code: EApiErrorCode.ENTRY_NOT_FOUND,
+      if (entity) {
+        return Api.result<IApiResultOne<Agent>>({
+          entity,
+        });
+      } else {
+        Api.error(HttpStatus.NOT_FOUND, {
+          code: EApiErrorCode.ENTRY_NOT_FOUND,
+        });
+      }
+    } catch (e) {
+      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
+        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
       });
     }
   }
 
   public async update(id: number, dto: UpdateAgentDto): Promise<IApiResult<IApiResultUpdate>> {
-    const findResult: Agent = await this.agentServiceRepository.findOne(id);
+    try {
+      const findResult: Agent = await this.agentServiceRepository.findOne(id);
 
-    if (findResult) {
-      await this.agentServiceRepository.save(Object.assign(findResult, dto));
-      const findNewResult: Agent = await this.agentServiceRepository.findOne(id);
+      if (findResult) {
+        await this.agentServiceRepository.save(Object.assign(findResult, dto));
+        const findNewResult: Agent = await this.agentServiceRepository.findOne(id);
 
-      return Api.result<IApiResultUpdate>(findNewResult);
-    } else {
-      Api.error(HttpStatus.NOT_FOUND, {
-        code: EApiErrorCode.ENTRY_NOT_FOUND,
+        return Api.result<IApiResultUpdate>(findNewResult);
+      } else {
+        Api.error(HttpStatus.NOT_FOUND, {
+          code: EApiErrorCode.ENTRY_NOT_FOUND,
+        });
+      }
+    } catch (e) {
+      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
+        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
       });
     }
   }
 
   async findOneByEmail(email: string): Promise<Agent> {
-    return await this.agentServiceRepository.findOne({
-      email,
-    });
+    try {
+      return await this.agentServiceRepository.findOne({
+        email,
+      });
+    } catch (e) {
+      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
+        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
+      });
+    }
   }
 
   public async insert(dto: AuthAgentDto): Promise<IApiResultCreate> {
-    const hashedPassword: string = await bcrypt.hash(dto.password, 10);
-    const result: InsertResult = await this.agentServiceRepository.insert(Object.assign(dto, {
-      password: hashedPassword,
-    }));
+    try {
+      const hashedPassword: string = await bcrypt.hash(dto.password, 10);
+      const result: InsertResult = await this.agentServiceRepository.insert(Object.assign(dto, {
+        password: hashedPassword,
+      }));
 
-    return {
-      id: result.identifiers[0].id,
-    };
+      return {
+        id: result.identifiers[0].id,
+      };
+    } catch (e) {
+      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
+        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
+      });
+    }
   }
 }
