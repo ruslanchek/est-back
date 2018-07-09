@@ -29,14 +29,22 @@ export class AuthService {
   }
 
   async login(dto: AuthAgentDto): Promise<IApiResult<ITokenPayload>> {
-    const entity = await this.usersService.findOneByEmailAndPassword(dto.email, dto.password);
+    const entity = await this.usersService.findOneByEmail(dto.email);
 
     if (entity) {
-      const tokenPayload: ITokenPayload = await this.createToken({
-        id: entity.id,
-      });
+      const passwordChecked: boolean = await bcrypt.compare(dto.password, entity.password);
 
-      return Api.result<ITokenPayload>(tokenPayload);
+      if (passwordChecked) {
+        const tokenPayload: ITokenPayload = await this.createToken({
+          id: entity.id,
+        });
+
+        return Api.result<ITokenPayload>(tokenPayload);
+      } else {
+        return Api.error<ITokenPayload>(HttpStatus.FORBIDDEN, {
+          code: EApiErrorCode.NOT_AUTHORIZED,
+        });
+      }
     } else {
       return Api.error<ITokenPayload>(HttpStatus.FORBIDDEN, {
         code: EApiErrorCode.NOT_AUTHORIZED,

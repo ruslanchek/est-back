@@ -6,6 +6,7 @@ import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { AuthAgentDto, UpdateAgentDto } from './agent.dto';
 import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne, IApiResultUpdate } from '../api';
 import * as bcrypt from 'bcrypt';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Injectable()
 export class AgentService {
@@ -55,13 +56,6 @@ export class AgentService {
   async findOneByEmail(email: string): Promise<Agent> {
     return await this.agentServiceRepository.findOne({
       email,
-    });
-  }
-
-  async findOneByEmailAndPassword(email: string, password: string): Promise<Agent> {
-    return await this.agentServiceRepository.findOne({
-      email,
-      password,
     });
   }
 
