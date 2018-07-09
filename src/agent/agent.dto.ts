@@ -69,3 +69,31 @@ export class UpdateAgentEmailDto {
   })
   readonly email: string;
 }
+
+export class LoginAgentDto {
+  @IsString()
+  @ApiModelProperty({
+    required: true,
+  })
+  readonly email: string;
+
+  @IsString()
+  @ApiModelProperty({
+    required: true,
+  })
+  readonly password: string;
+}
+
+export class RegisterAgentDto {
+  @IsString()
+  @ApiModelProperty({
+    required: true,
+  })
+  readonly email: string;
+
+  @IsString()
+  @ApiModelProperty({
+    required: true,
+  })
+  readonly password: string;
+}

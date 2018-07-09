@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { ITokenPayload } from './auth/auth.interface';
 
 export interface IApiResult<Payload> {
   payload: Payload;
@@ -32,6 +31,7 @@ export enum EApiErrorCode {
   VALIDATION_ERROR = 'VALIDATION_ERROR',
   ENTRY_NOT_FOUND = 'ENTRY_NOT_FOUND',
   BAD_REQUEST = 'BAD_REQUEST',
+  NOT_AUTHORIZED = 'NOT_AUTHORIZED',
 }
 
 export class Api {

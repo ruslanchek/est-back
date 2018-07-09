@@ -1,23 +1,17 @@
-import { Controller, Get, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ITokenPayload } from './auth.interface';
-import { Api, EApiErrorCode, IApiResult } from '../api';
+import { Api, EApiErrorCode, IApiResult, IApiResultUpdate } from '../api';
+import { ValidationPipe } from '../validation.pipe';
+import { LoginAgentDto } from '../agent/agent.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {
   }
 
-  @Get('token')
-  async createToken(): Promise<IApiResult<ITokenPayload>> {
-    const tokenPayload: ITokenPayload = await this.authService.createToken();
-
-    if (tokenPayload) {
-      return Api.result<ITokenPayload>(tokenPayload);
-    } else {
-      Api.error<ITokenPayload>(HttpStatus.BAD_REQUEST, {
-        code: EApiErrorCode.BAD_REQUEST,
-      });
-    }
+  @Post('login')
+  async login(@Param() params, @Body(new ValidationPipe()) dto: LoginAgentDto): Promise<IApiResult<ITokenPayload>> {
+    return await this.authService.login(dto);
   }
 }

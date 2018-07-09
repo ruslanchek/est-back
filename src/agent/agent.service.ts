@@ -36,9 +36,10 @@ export class AgentService {
     }
   }
 
-  async findOneByEmail(email: string): Promise<IApiResult<IApiResultOne<Agent>>> {
+  async findOneByEmailAndPassword(email: string, password: string): Promise<IApiResult<IApiResultOne<Agent>>> {
     const entity: Agent = await this.agentServiceRepository.findOne({
       email,
+      password,
     });
 
     if (entity) {
