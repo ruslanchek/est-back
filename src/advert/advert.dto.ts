@@ -36,12 +36,6 @@ export class CreateAdvertDto {
     required: true,
   })
   readonly price: number;
-
-  @IsInt()
-  @ApiModelProperty({
-    required: true,
-  })
-  readonly agent: Agent;
 }
 
 export class UpdateAdvertDto {
