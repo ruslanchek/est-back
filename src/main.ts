@@ -4,12 +4,12 @@ import { swagger } from './swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(ApplicationModule, {
-    cors: true
+    cors: true,
   });
 
   swagger(app);
-  
-  await app.listen(5666);
+
+  await app.listen(5667);
 }
 
 bootstrap();

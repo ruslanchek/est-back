@@ -33,6 +33,7 @@ export enum EApiErrorCode {
   BAD_REQUEST = 'BAD_REQUEST',
   NOT_AUTHORIZED = 'NOT_AUTHORIZED',
   CONFLICT = 'CONFLICT',
+  UNAUTHORIZED = 'UNAUTHORIZED',
 }
 
 export class Api {
