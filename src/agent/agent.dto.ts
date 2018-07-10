@@ -1,6 +1,7 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsEnum, IsInt, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 import { EAgentType } from './agent.enum';
+import { AUTH_POLICY } from '../auth/auth.policy';
 
 export class UpdateAgentDto {
   @IsString()
@@ -24,6 +25,14 @@ export class UpdateAgentDto {
 }
 
 export class UpdateAgentPasswordDto {
+  @Length(AUTH_POLICY.PASSWORD_MIN_LENGTH, AUTH_POLICY.PASSWORD_MAX_LENGTH)
+  @IsString()
+  @ApiModelProperty({
+    required: true,
+  })
+  readonly oldPassword: string;
+
+  @Length(AUTH_POLICY.PASSWORD_MIN_LENGTH, AUTH_POLICY.PASSWORD_MAX_LENGTH)
   @IsString()
   @ApiModelProperty({
     required: true,
@@ -32,7 +41,7 @@ export class UpdateAgentPasswordDto {
 }
 
 export class UpdateAgentEmailDto {
-  @IsString()
+  @IsEmail()
   @ApiModelProperty({
     required: true,
   })
@@ -40,12 +49,13 @@ export class UpdateAgentEmailDto {
 }
 
 export class AuthAgentDto {
-  @IsString()
+  @IsEmail()
   @ApiModelProperty({
     required: true,
   })
   readonly email: string;
 
+  @Length(AUTH_POLICY.PASSWORD_MIN_LENGTH, AUTH_POLICY.PASSWORD_MAX_LENGTH)
   @IsString()
   @ApiModelProperty({
     required: true,

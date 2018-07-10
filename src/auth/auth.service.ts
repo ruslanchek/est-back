@@ -6,7 +6,7 @@ import { IJwtPayload, ITokenPayload } from './auth.interface';
 import { AgentService } from '../agent/agent.service';
 import { Api, IApiResult, IApiResultOne } from '../api';
 import { Agent } from '../agent/agent.entity';
-import { AuthAgentDto } from '../agent/agent.dto';
+import { AuthAgentDto, UpdateAgentPasswordDto } from '../agent/agent.dto';
 
 @Injectable()
 export class AuthService {
@@ -61,5 +61,9 @@ export class AuthService {
 
       return Api.result<ITokenPayload>(tokenPayload);
     }
+  }
+
+  async passwordChange(dto: UpdateAgentPasswordDto): Promise<IApiResult<ITokenPayload>> {
+    const entityFound = await this.agentService.findOneByEmailForAuth(dto.email);
   }
 }

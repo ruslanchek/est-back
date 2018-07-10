@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { ITokenPayload } from './auth.interface';
 import { IApiResult } from '../api';
 import { ValidationPipe } from '../validation.pipe';
-import { AuthAgentDto } from '../agent/agent.dto';
+import { AuthAgentDto, UpdateAgentPasswordDto } from '../agent/agent.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -18,5 +18,10 @@ export class AuthController {
   @Post('register')
   async register(@Param() params, @Body(new ValidationPipe()) dto: AuthAgentDto): Promise<IApiResult<ITokenPayload>> {
     return await this.authService.register(dto);
+  }
+
+  @Post('password-change')
+  async passwordChange(@Param() params, @Body(new ValidationPipe()) dto: UpdateAgentPasswordDto): Promise<IApiResult<ITokenPayload>> {
+    return await this.authService.passwordChange(dto);
   }
 }
