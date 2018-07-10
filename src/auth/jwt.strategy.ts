@@ -16,8 +16,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: IJwtPayload, done: any) {
     try {
-      const user = await this.authService.validateUser(payload);
-      done(null, user);
+      const entity = await this.authService.validateUser(payload);
+      done(null, entity.payload.entity);
     } catch (e) {
       return done(
         new UnauthorizedException(),

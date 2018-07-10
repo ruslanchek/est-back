@@ -32,8 +32,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
     }
 
-    console.log(exception);
-
     switch (status) {
       case HttpStatus.BAD_REQUEST : {
         code = 'BAD_REQUEST';

@@ -25,7 +25,7 @@ export class AdvertService {
           entity,
         });
       } else {
-        throw new HttpException(  null, HttpStatus.NOT_FOUND);
+        throw new HttpException(null, HttpStatus.NOT_FOUND);
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -46,9 +46,11 @@ export class AdvertService {
     }
   }
 
-  public async insert(dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
+  public async insert(agentId: number, dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
     try {
-      const result: InsertResult = await this.advertServiceRepository.insert(dto);
+      const result: InsertResult = await this.advertServiceRepository.insert(Object.assign(dto, {
+        agent: agentId,
+      }));
 
       if (result && result.identifiers && result.identifiers[0] && result.identifiers[0].id) {
         return Api.result<IApiResultCreate>({
@@ -62,18 +64,24 @@ export class AdvertService {
     }
   }
 
-  public async update(id: number, dto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
+  public async update(agentId: number, id: number, dto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
     try {
-      const findResult: Advert = await this.advertServiceRepository.findOne(id);
+      const findResult: Advert = await this.advertServiceRepository.findOne(id, {
+        relations: ['agent'],
+      });
 
       if (findResult) {
-        await this.advertServiceRepository.save(Object.assign(findResult, dto));
+        if (findResult.agent.id === agentId) {
+          await this.advertServiceRepository.save(Object.assign(findResult, dto));
 
-        const findNewResult: Advert = await this.advertServiceRepository.findOne(id, {
-          relations: ['agent'],
-        });
+          const findNewResult: Advert = await this.advertServiceRepository.findOne(id, {
+            relations: ['agent'],
+          });
 
-        return Api.result<IApiResultUpdate>(findNewResult);
+          return Api.result<IApiResultUpdate>(findNewResult);
+        } else {
+          throw new HttpException(null, HttpStatus.FORBIDDEN);
+        }
       } else {
         throw new HttpException(null, HttpStatus.NOT_FOUND);
       }

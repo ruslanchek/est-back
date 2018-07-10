@@ -64,6 +64,6 @@ export class AuthService {
   }
 
   async passwordChange(dto: UpdateAgentPasswordDto): Promise<IApiResult<ITokenPayload>> {
-    const entityFound = await this.agentService.findOneByEmailForAuth(dto.email);
+    // const entityFound = await this.agentService.findOneByEmailForAuth(dto.email);
   }
 }

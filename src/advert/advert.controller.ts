@@ -1,4 +1,4 @@
-import { Get, Controller, Query, Post, HttpStatus, HttpException, Body, Patch, Put, Param, UseGuards } from '@nestjs/common';
+import { Get, Controller, Query, Post, HttpStatus, HttpException, Body, Patch, Put, Param, UseGuards, Request } from '@nestjs/common';
 import { AdvertService } from './advert.service';
 import { Advert } from './advert.entity';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
@@ -23,13 +23,25 @@ export class AdvertController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  async create(@Body(new ValidationPipe()) dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
-    return await this.advertService.insert(dto);
+  async create(@Request() req, @Body(new ValidationPipe()) dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
+    const { user } = req;
+
+    if (user && user.id) {
+      return await this.advertService.insert(user.id, dto);
+    } else {
+      throw new HttpException(null, HttpStatus.FORBIDDEN);
+    }
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  async update(@Param() params, @Body(new ValidationPipe()) dto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
-    return await this.advertService.update(params.id, dto);
+  async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
+    const { user } = req;
+
+    if (user && user.id) {
+      return await this.advertService.update(user.id, params.id, dto);
+    } else {
+      throw new HttpException(null, HttpStatus.FORBIDDEN);
+    }
   }
 }
