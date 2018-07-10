@@ -1,12 +1,11 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Agent } from './agent.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { AuthAgentDto, UpdateAgentDto } from './agent.dto';
-import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne, IApiResultUpdate } from '../api';
-import * as bcrypt from 'bcrypt';
-import { async } from 'rxjs/internal/scheduler/async';
+import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne, IApiResultUpdate } from '../api';
 
 @Injectable()
 export class AgentService {
@@ -24,9 +23,7 @@ export class AgentService {
         list,
       });
     } catch (e) {
-      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
-      });
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -39,14 +36,10 @@ export class AgentService {
           entity,
         });
       } else {
-        Api.error(HttpStatus.NOT_FOUND, {
-          code: EApiErrorCode.ENTRY_NOT_FOUND,
-        });
+        throw new HttpException(null, HttpStatus.NOT_FOUND);
       }
     } catch (e) {
-      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
-      });
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -60,14 +53,10 @@ export class AgentService {
 
         return Api.result<IApiResultUpdate>(findNewResult);
       } else {
-        Api.error(HttpStatus.NOT_FOUND, {
-          code: EApiErrorCode.ENTRY_NOT_FOUND,
-        });
+        throw new HttpException(null, HttpStatus.NOT_FOUND);
       }
     } catch (e) {
-      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
-      });
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -77,9 +66,7 @@ export class AgentService {
         email,
       });
     } catch (e) {
-      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
-      });
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -94,9 +81,7 @@ export class AgentService {
         id: result.identifiers[0].id,
       };
     } catch (e) {
-      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
-      });
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

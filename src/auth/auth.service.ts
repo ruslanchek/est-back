@@ -1,10 +1,10 @@
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AUTH_POLICY } from './auth.policy';
 import { IJwtPayload, ITokenPayload } from './auth.interface';
 import { AgentService } from '../agent/agent.service';
-import { Api, EApiErrorCode, IApiResult, IApiResultOne } from '../api';
+import { Api, IApiResult, IApiResultOne } from '../api';
 import { Agent } from '../agent/agent.entity';
 import { AuthAgentDto } from '../agent/agent.dto';
 
@@ -41,14 +41,10 @@ export class AuthService {
 
         return Api.result<ITokenPayload>(tokenPayload);
       } else {
-        return Api.error<ITokenPayload>(HttpStatus.FORBIDDEN, {
-          code: EApiErrorCode.UNAUTHORIZED,
-        });
+        throw new HttpException(null, HttpStatus.UNAUTHORIZED);
       }
     } else {
-      return Api.error<ITokenPayload>(HttpStatus.FORBIDDEN, {
-        code: EApiErrorCode.UNAUTHORIZED,
-      });
+      throw new HttpException(null, HttpStatus.UNAUTHORIZED);
     }
   }
 
@@ -56,9 +52,7 @@ export class AuthService {
     const entityFound = await this.agentService.findOneByEmail(dto.email);
 
     if (entityFound) {
-      return Api.error<ITokenPayload>(HttpStatus.CONFLICT, {
-        code: EApiErrorCode.CONFLICT,
-      });
+      throw new HttpException(null, HttpStatus.CONFLICT);
     } else {
       const entityNew = await this.agentService.insert(dto);
       const tokenPayload = await this.createToken({

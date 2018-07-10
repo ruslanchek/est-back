@@ -1,10 +1,10 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Advert } from './advert.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
-import { Api, EApiErrorCode, IApiResult, IApiResultCreate, IApiResultList, IApiResultUpdate, IApiResultOne } from '../api';
+import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultUpdate, IApiResultOne } from '../api';
 
 @Injectable()
 export class AdvertService {
@@ -25,14 +25,10 @@ export class AdvertService {
           entity,
         });
       } else {
-        Api.error(HttpStatus.NOT_FOUND, {
-          code: EApiErrorCode.ENTRY_NOT_FOUND,
-        });
+        throw new HttpException(null, HttpStatus.NOT_FOUND);
       }
     } catch (e) {
-      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
-      });
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -46,9 +42,7 @@ export class AdvertService {
         list,
       });
     } catch (e) {
-      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
-      });
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -61,14 +55,10 @@ export class AdvertService {
           id: result.identifiers[0].id,
         });
       } else {
-        Api.error(HttpStatus.BAD_REQUEST, {
-          code: EApiErrorCode.BAD_REQUEST,
-        });
+        throw new HttpException(null, HttpStatus.BAD_REQUEST);
       }
     } catch (e) {
-      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
-      });
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -85,14 +75,10 @@ export class AdvertService {
 
         return Api.result<IApiResultUpdate>(findNewResult);
       } else {
-        Api.error(HttpStatus.NOT_FOUND, {
-          code: EApiErrorCode.ENTRY_NOT_FOUND,
-        });
+        throw new HttpException(null, HttpStatus.NOT_FOUND);
       }
     } catch (e) {
-      Api.error(HttpStatus.INTERNAL_SERVER_ERROR, {
-        code: EApiErrorCode.INTERNAL_SERVER_ERROR,
-      });
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
