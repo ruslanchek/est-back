@@ -119,6 +119,13 @@
   version "9.6.22"
   resolved "https://npmjs.eoadm.com/@types%2fnode/-/node-9.6.22.tgz#05b55093faaadedea7a4b3f76e9a61346a6dd209"
 
+"@types/nodemailer@^4.6.2":
+  version "4.6.2"
+  resolved "https://npmjs.eoadm.com/@types%2fnodemailer/-/nodemailer-4.6.2.tgz#4a0cf246846cc5178270d354a252394a16860191"
+  dependencies:
+    "@types/events" "*"
+    "@types/node" "*"
+
 "@types/range-parser@*":
   version "1.2.2"
   resolved "https://npmjs.eoadm.com/@types%2frange-parser/-/range-parser-1.2.2.tgz#fa8e1ad1d474688a757140c91de6dace6f4abc8d"
