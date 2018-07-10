@@ -1,4 +1,4 @@
-import { Get, Controller, Body, Param, Patch, UseGuards, Guard } from '@nestjs/common';
+import { Get, Controller, Body, Param, Patch, UseGuards, Request } from '@nestjs/common';
 import { AgentService } from './agent.service';
 import { Agent } from './agent.entity';
 import { UpdateAgentDto } from './agent.dto';
@@ -23,7 +23,8 @@ export class AgentController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  async update(@Param() params, @Body(new ValidationPipe()) dto: UpdateAgentDto): Promise<IApiResult<IApiResultUpdate>> {
+  async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAgentDto): Promise<IApiResult<IApiResultUpdate>> {
+    console.log(req);
     return await this.agentService.update(params.id, dto);
   }
 

@@ -29,7 +29,7 @@ export class AuthService {
   }
 
   async login(dto: AuthAgentDto): Promise<IApiResult<ITokenPayload>> {
-    const entity = await this.agentService.findOneByEmail(dto.email);
+    const entity = await this.agentService.findOneByEmailForAuth(dto.email);
 
     if (entity) {
       const passwordChecked: boolean = await bcrypt.compare(dto.password, entity.password);
@@ -49,7 +49,7 @@ export class AuthService {
   }
 
   async register(dto: AuthAgentDto): Promise<IApiResult<ITokenPayload>> {
-    const entityFound = await this.agentService.findOneByEmail(dto.email);
+    const entityFound = await this.agentService.findOneByEmailForAuth(dto.email);
 
     if (entityFound) {
       throw new HttpException(null, HttpStatus.CONFLICT);

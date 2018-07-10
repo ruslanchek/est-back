@@ -60,10 +60,14 @@ export class AgentService {
     }
   }
 
-  async findOneByEmail(email: string): Promise<Agent> {
+  async findOneByEmailForAuth(email: string): Promise<Agent> {
     try {
       return await this.agentServiceRepository.findOne({
         email,
+      }, {
+        select: [
+          'password',
+        ],
       });
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
