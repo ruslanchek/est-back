@@ -18,11 +18,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let code = '';
     let details = null;
 
-    if(exception && exception.message && exception.message.status) {
-      status = exception.message.status;
-    }
+    if (exception && exception.message) {
+      if (exception.message.status) {
+        status = exception.message.status;
+      }
 
-    console.log(status, exception.message.status);
+      if (exception.message.error) {
+        details = exception.message.error;
+      }
+    }
 
     switch (status) {
       case HttpStatus.BAD_REQUEST : {
@@ -56,8 +60,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
         break;
       }
     }
-
-    details = exception.message;
 
     response
       .status(status)
