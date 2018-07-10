@@ -6,13 +6,19 @@ export class Advert {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    charset: 'utf8',
+  })
   title: string;
 
-  @Column()
+  @Column({
+    charset: 'utf8',
+  })
   type: string;
 
-  @Column()
+  @Column({
+    charset: 'utf8',
+  })
   contractType: string;
 
   @Column({

@@ -3,7 +3,7 @@ import { AdvertService } from './advert.service';
 import { Advert } from './advert.entity';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
 import { ValidationPipe } from '../validation.pipe';
-import { IApiResult, IApiResultCreate, IApiResultList, IApiResultUpdate, IApiResultOne } from '../api';
+import { IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('/api/advert')
@@ -25,7 +25,7 @@ export class AdvertController {
   @UseGuards(AuthGuard('jwt'))
   async create(@Request() req, @Body(new ValidationPipe()) dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
     const { user } = req;
-
+    
     if (user && user.id) {
       return await this.advertService.insert(user.id, dto);
     } else {
@@ -35,7 +35,7 @@ export class AdvertController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
+  async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAdvertDto): Promise<IApiResult<IApiResultOne<Advert>>> {
     const { user } = req;
 
     if (user && user.id) {

@@ -1,10 +1,11 @@
-import { Get, Controller, Body, Param, Patch, UseGuards, Request, HttpException, HttpStatus } from '@nestjs/common';
+import { Get, Controller, Body, Param, Patch, UseGuards, Request, HttpException, HttpStatus, Post } from '@nestjs/common';
 import { AgentService } from './agent.service';
 import { Agent } from './agent.entity';
-import { UpdateAgentDto } from './agent.dto';
+import { UpdateAgentDto, UpdateAgentPasswordDto } from './agent.dto';
 import { ValidationPipe } from '../validation.pipe';
 import { IApiResult, IApiResultList, IApiResultOne, IApiResultUpdate } from '../api';
 import { AuthGuard } from '@nestjs/passport';
+import { ITokenPayload } from '../auth/auth.interface';
 
 @Controller('/api/agent')
 export class AgentController {
@@ -21,7 +22,7 @@ export class AgentController {
     return await this.agentService.findOne(params.id);
   }
 
-  @Patch(':id')
+  @Patch('update')
   @UseGuards(AuthGuard('jwt'))
   async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAgentDto): Promise<IApiResult<IApiResultUpdate>> {
     const { user } = req;
@@ -33,9 +34,15 @@ export class AgentController {
     }
   }
 
-  // @Patch(':id/password-change')
-  // @UseGuards(AuthGuard('jwt'))
-  // async passwordChange(@Param() params, @Body(new ValidationPipe()) dto: UpdateAgentPasswordDto): Promise<IApiResult<IApiResultUpdate>> {
-  //   return await this.agentService.update(params.id, dto);
-  // }
+  @Patch('update-password')
+  @UseGuards(AuthGuard('jwt'))
+  async passwordChange(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAgentPasswordDto): Promise<IApiResult<IApiResultUpdate>> {
+    const { user } = req;
+
+    if (user && user.id) {
+      return await this.agentService.updatePassword(user.id, dto);
+    } else {
+      throw new HttpException(null, HttpStatus.FORBIDDEN);
+    }
+  }
 }

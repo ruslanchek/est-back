@@ -23,14 +23,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
         status = exception.message.status;
       }
 
-      if (exception.message.error) {
-        details = exception.message.error;
-      } else if (exception.message.response) {
-        details = exception.message.response;
-      } else if (exception.message) {
-        details = exception.message;
+      if(status !== HttpStatus.INTERNAL_SERVER_ERROR) {
+        if (exception.message.error) {
+          details = exception.message.error;
+        } else if (exception.message.response) {
+          details = exception.message.response;
+        } else if (exception.message) {
+          details = exception.message;
+        }
       }
     }
+
+    console.error(exception);
 
     switch (status) {
       case HttpStatus.BAD_REQUEST : {

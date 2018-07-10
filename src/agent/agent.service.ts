@@ -4,8 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Agent } from './agent.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
-import { AuthAgentDto, UpdateAgentDto } from './agent.dto';
-import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne, IApiResultUpdate } from '../api';
+import { AuthAgentDto, UpdateAgentDto, UpdateAgentPasswordDto } from './agent.dto';
+import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
+import { Advert } from '../advert/advert.entity';
 
 @Injectable()
 export class AgentService {
@@ -43,15 +44,36 @@ export class AgentService {
     }
   }
 
-  public async update(id: number, dto: UpdateAgentDto): Promise<IApiResult<IApiResultUpdate>> {
+  public async update(id: number, dto: UpdateAgentDto): Promise<IApiResult<IApiResultOne<Agent>>> {
     try {
       const findResult: Agent = await this.agentServiceRepository.findOne(id);
 
       if (findResult) {
         await this.agentServiceRepository.save(Object.assign(findResult, dto));
-        const findNewResult: Agent = await this.agentServiceRepository.findOne(id);
+        const entity: Agent = await this.agentServiceRepository.findOne(id);
 
-        return Api.result<IApiResultUpdate>(findNewResult);
+        return Api.result<IApiResultOne<Agent>>({
+          entity,
+        });
+      } else {
+        throw new HttpException(null, HttpStatus.NOT_FOUND);
+      }
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async updatePassword(id: number, dto: UpdateAgentPasswordDto): Promise<IApiResult<IApiResultOne<Agent>>> {
+    try {
+      const findResult: Agent = await this.agentServiceRepository.findOne(id);
+
+      if (findResult) {
+        await this.agentServiceRepository.save(Object.assign(findResult, dto));
+        const entity: Agent = await this.agentServiceRepository.findOne(id);
+
+        return Api.result<IApiResultOne<Agent>>({
+          entity,
+        });
       } else {
         throw new HttpException(null, HttpStatus.NOT_FOUND);
       }

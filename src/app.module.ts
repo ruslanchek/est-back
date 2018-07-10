@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
       username: 'realthub',
       password: 'Tukzara2044',
       database: 'realthub',
+      charset: 'utf8',
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: true,
     }),

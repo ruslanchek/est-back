@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Advert } from './advert.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
-import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultUpdate, IApiResultOne } from '../api';
+import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
 
 @Injectable()
 export class AdvertService {
@@ -64,7 +64,7 @@ export class AdvertService {
     }
   }
 
-  public async update(agentId: number, id: number, dto: UpdateAdvertDto): Promise<IApiResult<IApiResultUpdate>> {
+  public async update(agentId: number, id: number, dto: UpdateAdvertDto): Promise<IApiResult<IApiResultOne<Advert>>> {
     try {
       const findResult: Advert = await this.advertServiceRepository.findOne(id, {
         relations: ['agent'],
@@ -74,11 +74,13 @@ export class AdvertService {
         if (findResult.agent.id === agentId) {
           await this.advertServiceRepository.save(Object.assign(findResult, dto));
 
-          const findNewResult: Advert = await this.advertServiceRepository.findOne(id, {
+          const entity: Advert = await this.advertServiceRepository.findOne(id, {
             relations: ['agent'],
           });
 
-          return Api.result<IApiResultUpdate>(findNewResult);
+          return Api.result<IApiResultOne<Advert>>({
+            entity,
+          });
         } else {
           throw new HttpException(null, HttpStatus.FORBIDDEN);
         }
