@@ -9,10 +9,13 @@ export class Agent {
 
   @Column({
     unique: true,
+    select: false,
   })
   email: string;
 
-  @Column()
+  @Column({
+    select: false,
+  })
   password: string;
 
   @Column({
@@ -22,6 +25,7 @@ export class Agent {
 
   @Column({
     default: '',
+    select: false,
   })
   phone: string;
 

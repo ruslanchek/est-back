@@ -25,7 +25,7 @@ export class AdvertService {
           entity,
         });
       } else {
-        throw new HttpException('asas', HttpStatus.NOT_FOUND);
+        throw new HttpException(  null, HttpStatus.NOT_FOUND);
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
