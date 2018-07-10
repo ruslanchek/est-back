@@ -25,6 +25,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
       if (exception.message.error) {
         details = exception.message.error;
+      } else if (exception.message.response) {
+        details = exception.message.response;
       }
     }
 
