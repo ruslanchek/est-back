@@ -5,16 +5,20 @@ import { Advert } from './advert.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
 import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
+import { MailingService } from 'mailing.service';
 
 @Injectable()
 export class AdvertService {
   constructor(
     @InjectRepository(Advert)
     private readonly advertServiceRepository: Repository<Advert>,
+    private readonly mailingService: MailingService,
   ) {
   }
 
   public async findOne(id: number): Promise<IApiResult<IApiResultOne<Advert>>> {
+    console.log(this.mailingService.send())
+
     try {
       const entity: Advert = await this.advertServiceRepository.findOne(id, {
         relations: ['agent'],
