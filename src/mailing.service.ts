@@ -59,7 +59,7 @@ export class MailingService {
 
     return {
       from: `Realthub <mail@realthub.com>`,
-      to: 'ipa.725@gmail.com',
+      to: 'rshashkov@icloud.com',
       subject: data.title,
       text: 'Hello!',
       html,
