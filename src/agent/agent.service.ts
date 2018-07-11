@@ -6,8 +6,7 @@ import { Agent } from './agent.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { AuthAgentDto, UpdateAgentDto, UpdateAgentPasswordDto } from './agent.dto';
 import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
-import { Advert } from '../advert/advert.entity';
-import { MailingService } from 'mailing.service';
+import { MailingService } from '../mailing.service';
 
 @Injectable()
 export class AgentService {

@@ -1,0 +1,21 @@
+image: node:8.9.1
+
+pipelines:
+  branches:
+    master:
+      - step:
+          caches:
+            - node
+
+          script:
+            # install rsync
+            - eval `ssh-agent`
+            - ssh-add /opt/atlassian/pipelines/agent/data/id_rsa
+            - apt-get update && apt-get install -y rsync
+            - yarn install
+            - yarn postinstall
+
+            # deploy app
+            - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "mkdir ~/apps/api -p"
+            - rsync -av --exclude='.git' ./ ${USERNAME}@${HOSTNAME}:~/apps/api
+            - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "cd ~/apps/api && pm2 reload pm2.json"

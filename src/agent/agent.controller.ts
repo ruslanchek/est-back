@@ -3,9 +3,8 @@ import { AgentService } from './agent.service';
 import { Agent } from './agent.entity';
 import { UpdateAgentDto, UpdateAgentPasswordDto } from './agent.dto';
 import { ValidationPipe } from '../validation.pipe';
-import { IApiResult, IApiResultList, IApiResultOne, IApiResultUpdate } from '../api';
+import { IApiResult, IApiResultList, IApiResultOne } from '../api';
 import { AuthGuard } from '@nestjs/passport';
-import { ITokenPayload } from '../auth/auth.interface';
 
 @Controller('/api/agent')
 export class AgentController {
@@ -24,7 +23,7 @@ export class AgentController {
 
   @Patch('update')
   @UseGuards(AuthGuard('jwt'))
-  async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAgentDto): Promise<IApiResult<IApiResultUpdate>> {
+  async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAgentDto): Promise<IApiResult<IApiResultOne<Agent>>> {
     const { user } = req;
 
     if (user && user.id) {
@@ -36,7 +35,11 @@ export class AgentController {
 
   @Patch('update-password')
   @UseGuards(AuthGuard('jwt'))
-  async passwordChange(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAgentPasswordDto): Promise<IApiResult<IApiResultUpdate>> {
+  async passwordChange(
+    @Request() req,
+    @Param() params,
+    @Body(new ValidationPipe()) dto: UpdateAgentPasswordDto,
+  ): Promise<IApiResult<IApiResultOne<Agent>>> {
     const { user } = req;
 
     if (user && user.id) {

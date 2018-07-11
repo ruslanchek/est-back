@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { AgentModule } from '../agent/agent.module';
 import { JwtStrategy } from './jwt.strategy';
-import { MailingService } from 'mailing.service';
+import { MailingService } from '../mailing.service';
 
 @Module({
   imports: [AgentModule],

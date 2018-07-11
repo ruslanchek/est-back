@@ -5,7 +5,7 @@ import { Advert } from './advert.entity';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
 import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
-import { MailingService } from 'mailing.service';
+import { MailingService } from '../mailing.service';
 
 @Injectable()
 export class AdvertService {
