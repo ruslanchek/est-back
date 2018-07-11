@@ -16,7 +16,7 @@ import { MailingService } from 'mailing.service';
       password: 'Tukzara2044',
       database: 'realthub',
       charset: 'utf8',
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
     AdvertModule,
