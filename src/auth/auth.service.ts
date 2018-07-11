@@ -7,10 +7,14 @@ import { AgentService } from '../agent/agent.service';
 import { Api, IApiResult, IApiResultOne } from '../api';
 import { Agent } from '../agent/agent.entity';
 import { AuthAgentDto, UpdateAgentPasswordDto } from '../agent/agent.dto';
+import { MailingService } from '../mailing.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly agentService: AgentService) {
+  constructor(
+    private readonly agentService: AgentService,
+    private readonly mailingService: MailingService,
+  ) {
   }
 
   async createToken(payload: IJwtPayload): Promise<ITokenPayload> {
@@ -54,9 +58,17 @@ export class AuthService {
     if (entityFound) {
       throw new HttpException(null, HttpStatus.CONFLICT);
     } else {
+      const verificationCode: string = bcrypt.hashSync(dto.email, 5);
       const entityNew = await this.agentService.insert(dto);
       const tokenPayload = await this.createToken({
         id: entityNew.id,
+      });
+
+      await this.mailingService.sendWelcome({
+        agentName: dto.email,
+        agentEmail: dto.email,
+        agentId: entityNew.id,
+        verificationCode,
       });
 
       return Api.result<ITokenPayload>(tokenPayload);

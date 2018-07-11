@@ -7,12 +7,14 @@ import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { AuthAgentDto, UpdateAgentDto, UpdateAgentPasswordDto } from './agent.dto';
 import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
 import { Advert } from '../advert/advert.entity';
+import { MailingService } from 'mailing.service';
 
 @Injectable()
 export class AgentService {
   constructor(
     @InjectRepository(Agent)
     private readonly agentServiceRepository: Repository<Agent>,
+    private readonly mailingService: MailingService,
   ) {
   }
 

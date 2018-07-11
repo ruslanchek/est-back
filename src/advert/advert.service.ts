@@ -17,8 +17,6 @@ export class AdvertService {
   }
 
   public async findOne(id: number): Promise<IApiResult<IApiResultOne<Advert>>> {
-    console.log(this.mailingService.send())
-
     try {
       const entity: Advert = await this.advertServiceRepository.findOne(id, {
         relations: ['agent'],

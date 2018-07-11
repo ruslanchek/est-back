@@ -21,6 +21,19 @@ export class Agent {
   password: string;
 
   @Column({
+    default: false,
+    select: false,
+  })
+  emailVerified: boolean;
+
+  @Column({
+    charset: 'utf8',
+    default: '',
+    select: false,
+  })
+  emailVerificationCode: string;
+
+  @Column({
     charset: 'utf8',
     default: '',
   })
