@@ -12,8 +12,7 @@ pipelines:
             - eval `ssh-agent`
             - ssh-add /opt/atlassian/pipelines/agent/data/id_rsa
             - apt-get update && apt-get install -y rsync
-            - yarn install
-            - yarn postinstall
+            - yarn prestart:prod
 
             # deploy app
             - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "mkdir ~/apps/api -p"
