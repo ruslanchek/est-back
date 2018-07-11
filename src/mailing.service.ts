@@ -38,7 +38,7 @@ export class MailingService {
       siteUrl: 'https://realthub.com?from=email',
       linkUnderLogoUrl: 'https://realthub.com?from=email',
       linkUnderLogoText: 'View in browser',
-      pre: 'Hi Username,',
+      pre: 'Hi Ilya,',
       title: 'You are almost Finished...',
       body: 'Thank you for participating in our Beta! Please confirm your subscription to claim your account.',
       buttonText: 'Complete registration',
@@ -58,10 +58,10 @@ export class MailingService {
     const html: string = this.render(this.templates.transactional, data);
 
     return {
-      from: 'Ruslan Shashkov <ruslanchek@gmail.com>',
-      to: 'rshashkov@icloud.com',
+      from: `Realthub <mail@realthub.com>`,
+      to: 'ipa.725@gmail.com',
       subject: data.title,
-      text: 'Hello world ✔',
+      text: 'Hello!',
       html,
     };
   }

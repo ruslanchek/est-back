@@ -548,7 +548,7 @@
 
                                                                                 <div style="font-family:Open Sans, Helvetica Neue, Arial, sans-serif;font-size:12px;line-height:18px;text-align:center;color:#888888;">
                                                                                     {{copyright}}
-                                                                                    <a href="{{unsubscribeLinkUrl}}">{{unsubscribeLinkText}}</a>.
+                                                                                    <a class="link-footer" href="{{unsubscribeLinkUrl}}" style="color: #888888; text-decoration: none;">{{unsubscribeLinkText}}</a>.
                                                                                 </div>
 
                                                                             </td>
