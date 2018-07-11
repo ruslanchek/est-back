@@ -62,7 +62,7 @@ export class MailingService {
     const dataLocal = Object.assign({
       siteUrl: 'https://realthub.com?from=email',
       linkUnderLogoUrl: 'https://realthub.com?from=email',
-      linkUnderLogoText: 'View in browser',
+      linkUnderLogoText: 'realthub.com',
       pre: data.pre,
       title: data.title,
       body: data.body,
