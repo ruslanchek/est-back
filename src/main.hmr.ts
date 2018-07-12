@@ -7,7 +7,7 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create(ApplicationModule);
   swagger(app);
-  await app.listen(process.env.PORT || 5667);
+  await app.listen(process.env.PORT);
 
   if (module.hot) {
     module.hot.accept();

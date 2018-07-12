@@ -12,7 +12,7 @@ async function bootstrap() {
 
   swagger(app);
 
-  await app.listen(process.env.PORT || 5667);
+  await app.listen(process.env.PORT);
 }
 
 bootstrap();
