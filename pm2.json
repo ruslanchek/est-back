@@ -1,0 +1,21 @@
+{
+  "apps": [
+    {
+      "script": "./dist/main.js",
+      "watch": false,
+      "env": {
+        "NODE_ENV": "production",
+        "MYSQL_DB": "realthub",
+        "MYSQL_HOST": "db.realthub.com",
+        "MYSQL_PASSWORD": "Tukzara2044",
+        "MYSQL_PORT": "3306",
+        "MYSQL_USER": "realthub"
+      },
+      "name": "realthub.com",
+      "instances": 1,
+      "exec_mode": "cluster",
+      "error_file": "error-app.log",
+      "out_file": "out-app.log"
+    }
+  ]
+}
