@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/smtp-transport';
-import * as Mustache from 'Mustache';
+import * as Mustache from 'mustache';
 import * as fs from 'fs';
 
 export interface IMailDataForWelcome extends IMailDataFor {
