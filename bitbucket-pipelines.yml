@@ -18,5 +18,5 @@ pipelines:
 
             # deploy app
             - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "mkdir ~/apps/api -p"
-            - rsync -av --exclude='.git' ./ ${USERNAME}@${HOSTNAME}:~/apps/api
+            - rsync -av ./dist ${USERNAME}@${HOSTNAME}:~/apps/api
             - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "cd ~/apps/api && pm2 reload pm2.json"
