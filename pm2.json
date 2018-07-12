@@ -4,11 +4,12 @@
       "script": "./dist/main.js",
       "watch": false,
       "env": {
+        "PORT": 5567,
         "NODE_ENV": "production",
         "MYSQL_DB": "realthub",
         "MYSQL_HOST": "db.realthub.com",
         "MYSQL_PASSWORD": "Tukzara2044",
-        "MYSQL_PORT": "3306",
+        "MYSQL_PORT": 3306,
         "MYSQL_USER": "realthub"
       },
       "name": "realthub.com",
