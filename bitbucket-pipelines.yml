@@ -13,6 +13,7 @@ pipelines:
             - ssh-add /opt/atlassian/pipelines/agent/data/id_rsa
             - apt-get update && apt-get install -y rsync
             - yarn global add typescript
+            - yarn install
             - yarn prestart:prod
 
             # deploy app
