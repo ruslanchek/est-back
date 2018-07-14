@@ -1,33 +1,33 @@
-image: node:8.9.1
+# image: node:8.9.1
 
-pipelines:
-  branches:
-    master:
-      - step:
-          caches:
-            - node
+# pipelines:
+#   branches:
+#     master:
+#       - step:
+#           caches:
+#             - node
 
-          script:
-            # install rsync
-            - eval `ssh-agent`
-            - ssh-add /opt/atlassian/pipelines/agent/data/id_rsa
-            - yarn global add typescript
-            - yarn install
-            - yarn prestart:prod
+#           script:
+#             # install rsync
+#             - eval `ssh-agent`
+#             - ssh-add /opt/atlassian/pipelines/agent/data/id_rsa
+#             - yarn global add typescript
+#             - yarn install
+#             - yarn prestart:prod
 
-      - step:
-          name: Deploy to production
-          deployment: production
-          trigger: manual
+#       - step:
+#           name: Deploy to production
+#           deployment: production
+#           trigger: manual
 
-          script:
-            # deploy app
-            - apt-get update && apt-get install -y rsync
-            - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "mkdir ~/apps/api -p"
-            - rsync -av ./ ${USERNAME}@${HOSTNAME}:~/apps/api
-            - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "cd ~/apps/api && pm2 reload pm2.json"
+#           script:
+#             # deploy app
+#             - apt-get update && apt-get install -y rsync
+#             - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "mkdir ~/apps/api -p"
+#             - rsync -av ./ ${USERNAME}@${HOSTNAME}:~/apps/api
+#             - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "cd ~/apps/api && pm2 reload pm2.json"
 
-#      - step:
-#          name: Deploy to test
-#          deployment: production
-#          trigger: manual
+# #      - step:
+# #          name: Deploy to test
+# #          deployment: production
+# #          trigger: manual
