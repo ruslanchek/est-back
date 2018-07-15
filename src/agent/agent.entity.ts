@@ -8,14 +8,12 @@ export class Agent {
   id: number;
 
   @Column({
-    charset: 'utf8',
     unique: true,
     select: false,
   })
   email: string;
 
   @Column({
-    charset: 'utf8',
     select: false,
   })
   password: string;
@@ -27,27 +25,23 @@ export class Agent {
   emailVerified: boolean;
 
   @Column({
-    charset: 'utf8',
     default: '',
     select: false,
   })
   emailVerificationCode: string;
 
   @Column({
-    charset: 'utf8',
     default: '',
   })
   name: string;
 
   @Column({
-    charset: 'utf8',
     default: '',
     select: false,
   })
   phone: string;
 
   @Column({
-    charset: 'utf8',
     default: EAgentType.Private,
   })
   type: string;

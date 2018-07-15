@@ -4,18 +4,21 @@ import { LoggerMiddleware } from './logger.middleware';
 import { AdvertModule } from './advert/advert.module';
 import { AgentModule } from './agent/agent.module';
 import { AuthModule } from './auth/auth.module';
+import {parse} from 'pg-connection-string';
+
+const PG_CONFIG = parse(process.env.DATABASE_URL);
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.MYSQL_HOST,
-      port: parseInt(process.env.MYSQL_PORT, 10),
-      username: process.env.MYSQL_USER,
-      password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_DB,
-      charset: 'utf8',
+      type: 'postgres',
+      host: PG_CONFIG.host,
+      port: PG_CONFIG.port,
+      username: PG_CONFIG.user,
+      password: PG_CONFIG.password,
+      database: PG_CONFIG.database,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      ssl: true,
       synchronize: true,
     }),
     AdvertModule,

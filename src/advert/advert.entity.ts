@@ -6,29 +6,23 @@ export class Advert {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    charset: 'utf8',
-  })
+  @Column()
   title: string;
 
-  @Column({
-    charset: 'utf8',
-  })
+  @Column()
   type: string;
 
-  @Column({
-    charset: 'utf8',
-  })
+  @Column()
   contractType: string;
 
   @Column({
-    type: 'double',
+    type: 'decimal',
     default: 0,
   })
   constructionDate: number;
 
   @Column({
-    type: 'double',
+    type: 'decimal',
     default: 0,
   })
   price: number;
