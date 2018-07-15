@@ -13,7 +13,7 @@
     "allowJs": true,
     "outDir": "./dist",
     "baseUrl": "./src",
-    "traceResolution": true
+    "types": ["node"]
   },
   "include": [
     "src/**/*"
