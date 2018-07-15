@@ -9,6 +9,7 @@
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:dev": "nodemon",
     "prestart:prod": "rm -rf dist && mkdir -p dist && tsc && cp -R src/templates dist",
+    "postinstall": "rm -rf dist && mkdir -p dist && tsc && cp -R src/templates dist",
     "start:prod": "node dist/main.js",
     "test": "jest",
     "test:cov": "jest --coverage",
