@@ -9,15 +9,11 @@
     "start": "ts-node -r tsconfig-paths/register src/main.ts",
     "start:dev": "nodemon",
     "prestart:prod": "rm -rf dist && mkdir -p dist && tsc && cp -R src/templates dist",
-    "postinstall": "rm -rf dist && mkdir -p dist && tsc && cp -R src/templates dist",
     "start:prod": "node dist/main.js",
     "test": "jest",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "webpack": "webpack --config webpack.config.js"
-  },
-  "engines": {
-    "node": "8.11.0"
   },
   "dependencies": {
     "@nestjs/common": "^5.0.0",
