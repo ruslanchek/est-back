@@ -22,6 +22,8 @@ server {
         gzip_static on;
         expires max;
         add_header Cache-Control public;
+        auth_basic "Restricted Content";
+        auth_basic_user_file /etc/nginx/.htpasswd;
     }
 
     location /api {
@@ -31,6 +33,8 @@ server {
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
+        auth_basic "Restricted Content";
+        auth_basic_user_file /etc/nginx/.htpasswd;
     }
 }
 
