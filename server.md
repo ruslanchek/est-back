@@ -18,6 +18,7 @@ server {
     server_name realthub.com;
 
     location / {
+        try_files '' index.html =404;
         alias /home/realthub/apps/web/dist/;
         gzip_static on;
         expires max;
