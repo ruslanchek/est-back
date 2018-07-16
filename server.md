@@ -11,6 +11,8 @@ sudo systemctl enable nginx
 
 #node
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+sudo apt-get install -y nodejs build-essential
+sudo npm install pm2 -g
 
 #postgres
 sudo apt-get install -y postgresql postgresql-contrib
