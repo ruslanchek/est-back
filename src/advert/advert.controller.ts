@@ -25,7 +25,7 @@ export class AdvertController {
   @UseGuards(AuthGuard('jwt'))
   async create(@Request() req, @Body(new ValidationPipe()) dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
     const { user } = req;
-    
+
     if (user && user.id) {
       return await this.advertService.insert(user.id, dto);
     } else {

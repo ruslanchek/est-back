@@ -5,7 +5,7 @@ import { IApiResult } from '../api';
 import { ValidationPipe } from '../validation.pipe';
 import { AuthAgentDto, UpdateAgentPasswordDto } from '../agent/agent.dto';
 
-@Controller('auth')
+@Controller('/api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {
   }
