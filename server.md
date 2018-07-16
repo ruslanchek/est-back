@@ -2,6 +2,7 @@
 adduser realthub
 usermod -aG sudo realthub
 su - realthub
+mkdir -p ~/.ssh && cd ~/.ssh && touch authorized_keys
 
 #utils and nginx
 sudo apt-get update
