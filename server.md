@@ -6,13 +6,38 @@ mkdir -p ~/.ssh && cd ~/.ssh && touch authorized_keys
 
 #utils and nginx
 sudo apt-get update
-sudo apt-get install -y curl mc nginx
+sudo apt-get install -y htop curl mc nginx
 sudo systemctl enable nginx
+
+#nginx config
+sudo nano /etc/nginx/sites-available/default
+
+server {
+    listen 80;
+
+    server_name realthub.com;
+
+    location / {
+        proxy_pass http://localhost:5566;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+#test nginx config
+sudo nginx -t
+
+#restart nginx
+sudo service nginx restart
 
 #node
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs build-essential
 sudo npm install pm2 -g
+pm2 startup
 
 #postgres
 sudo apt-get install -y postgresql postgresql-contrib
