@@ -22,6 +22,7 @@
 
            script:
              # deploy app
+             - ls
              - apt-get update && apt-get install -y rsync
              - ssh -p ${PORT} -l ${USERNAME} ${HOSTNAME} "mkdir ~/apps/api -p"
              - rsync -av ./ ${USERNAME}@${HOSTNAME}:~/apps/api
