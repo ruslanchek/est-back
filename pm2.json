@@ -4,13 +4,9 @@
       "script": "./dist/main.js",
       "watch": false,
       "env": {
-        "PORT": 5567,
+        "PORT": 5566,
         "NODE_ENV": "production",
-        "MYSQL_DB": "realthub",
-        "MYSQL_HOST": "db.realthub.com",
-        "MYSQL_PASSWORD": "Tukzara2044",
-        "MYSQL_PORT": 3306,
-        "MYSQL_USER": "realthub"
+        "DATABASE_URL": "postgres://realthub:Tukzara2044@realthub.com:5432/realthub"
       },
       "name": "realthub.com",
       "instances": 1,
