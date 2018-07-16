@@ -17,8 +17,8 @@ server {
 
     server_name realthub.com;
 
-    location / {
-        proxy_pass http://localhost:5566;
+    location /api {
+        proxy_pass http://localhost:5566/api;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
