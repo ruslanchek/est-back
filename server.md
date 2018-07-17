@@ -9,13 +9,26 @@ sudo apt-get update
 sudo apt-get install -y htop curl mc nginx
 sudo systemctl enable nginx
 
+#basic auth
+sudo sh -c "echo -n 'happy:' >> /etc/nginx/.htpasswd"
+sudo sh -c "openssl passwd -apr1 >> /etc/nginx/.htpasswd"
+
 #nginx config
 sudo nano /etc/nginx/sites-available/default
 
 server {
-    listen 80;
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	server_name _;
+	return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
 
     server_name realthub.com;
+    ssl_certificate /etc/nginx/ssl/realthub.crt;
+    ssl_certificate_key /etc/nginx/ssl/realthub.key;
 
     location / {
         try_files '' index.html =404;
