@@ -19,8 +19,21 @@ sudo nano /etc/nginx/sites-available/default
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
-	server_name _;
-	return 301 https://$host$request_uri;
+
+	server_name realthub.com www.realthub.com;
+
+	return 301 https://realthub.com$request_uri;
+}
+
+server {
+    listen 443 ssl;
+
+    server_name www.realthub.com;
+    
+    ssl_certificate /etc/nginx/ssl/realthub.crt;
+    ssl_certificate_key /etc/nginx/ssl/realthub.key;
+
+    return 301 https://realthub.com$request_uri;
 }
 
 server {
@@ -31,8 +44,8 @@ server {
     ssl_certificate_key /etc/nginx/ssl/realthub.key;
 
     location / {
-        try_files '' index.html =404;
-        alias /home/realthub/apps/web/dist/;
+        root /home/realthub/apps/web/dist;
+        try_files $uri $uri/ /index.html;
         gzip_static on;
         expires max;
         add_header Cache-Control public;
