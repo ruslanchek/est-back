@@ -4,7 +4,7 @@ import { MailOptions } from 'nodemailer/lib/smtp-transport';
 import * as Mustache from 'mustache';
 import * as fs from 'fs';
 
-export interface IMailDataForWelcome extends IMailDataFor {
+export interface IMailDataForAuth extends IMailDataFor {
   verificationCode: string;
 }
 
@@ -91,7 +91,7 @@ export class MailingService {
     };
   }
 
-  public async sendWelcome(data: IMailDataForWelcome): Promise<boolean> {
+  public async sendWelcome(data: IMailDataForAuth): Promise<boolean> {
     const dataProcessed: IMailData = {
       to: data.agentEmail,
       subject: 'Welcome to Realthub',
@@ -101,6 +101,21 @@ export class MailingService {
       body: 'Thank you for your registration! Please confirm your subscription to verify your account.',
       buttonText: 'Verify account',
       buttonUrl: `https://realthub.com/verification/email/${data.verificationCode}`,
+    };
+
+    return await this.send(this.createMailOptions(dataProcessed));
+  }
+
+  public async sendPasswordChanged(data: IMailDataForAuth): Promise<boolean> {
+    const dataProcessed: IMailData = {
+      to: data.agentEmail,
+      subject: 'Your password has changed',
+      userName: data.agentName,
+      pre: `Hi ${data.agentName},`,
+      title: 'Your password has changed',
+      body: 'Congratulations, you have successfully changed your password!',
+      buttonText: 'Your personal area',
+      buttonUrl: `https://realthub.com/personal`,
     };
 
     return await this.send(this.createMailOptions(dataProcessed));

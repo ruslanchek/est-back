@@ -83,13 +83,14 @@ export class AuthService {
         throw new HttpException(null, HttpStatus.CONFLICT);
       } else {
         const verificationCode: string = await bcrypt.hash(dto.email, 5);
-        const entityNew = await this.insert(dto);
+        const name = dto.email.match(/^([^@]*)@/)[1];
+        const entityNew = await this.insert(Object.assign(dto, { name }));
         const tokenPayload = await this.createToken({
           id: entityNew.id,
         });
 
         await this.mailingService.sendWelcome({
-          agentName: dto.email,
+          agentName: name,
           agentEmail: dto.email,
           agentId: entityNew.id,
           verificationCode,

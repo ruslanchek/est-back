@@ -5,26 +5,30 @@ import { Api, IApiResult, IApiResultOne } from '../api';
 import { Agent } from '../agent/agent.entity';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
 import * as bcrypt from 'bcrypt';
+import { MailingService } from '../mailing.service';
+
+const PERSONAL_ENTITY_SELECT_FIELDS = [
+  'id',
+  'email',
+  'emailVerified',
+  'name',
+  'phone',
+  'type',
+];
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectRepository(Agent)
     private readonly agentServiceRepository: Repository<Agent>,
+    private readonly mailingService: MailingService,
   ) {
   }
 
   public async getProfile(id: number): Promise<IApiResult<IApiResultOne<Agent>>> {
     try {
       const entity: Agent = await this.agentServiceRepository.findOne(id, {
-        select: [
-          'id',
-          'email',
-          'emailVerified',
-          'name',
-          'phone',
-          'type',
-        ],
+        select: PERSONAL_ENTITY_SELECT_FIELDS,
       });
 
       if (entity) {
@@ -64,7 +68,9 @@ export class ProfileService {
   public async updatePassword(id: number, dto: UpdateProfilePasswordDto): Promise<IApiResult<IApiResultOne<Agent>>> {
     try {
       const findResult: Agent = await this.agentServiceRepository.findOne(id, {
-        select: ['password'],
+        select: [
+          'password',
+        ],
       });
 
       if (findResult) {
@@ -76,7 +82,16 @@ export class ProfileService {
             { id },
             { password: hashedPassword },
           );
-          const entity: Agent = await this.agentServiceRepository.findOne(id);
+          const entity: Agent = await this.agentServiceRepository.findOne({ id }, {
+            select: PERSONAL_ENTITY_SELECT_FIELDS,
+          });
+
+          await this.mailingService.sendPasswordChanged({
+            agentName: entity.name,
+            agentEmail: entity.email,
+            agentId: entity.id,
+            verificationCode: '',
+          });
 
           return Api.result<IApiResultOne<Agent>>({
             entity,
