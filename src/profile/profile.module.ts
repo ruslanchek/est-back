@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
 import { AgentModule } from '../agent/agent.module';
-import { JwtStrategy } from './jwt.strategy';
 import { MailingService } from '../mailing.service';
+import { AuthService } from '../auth/auth.service';
+import { ProfileController } from './profile.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Agent } from '../agent/agent.entity';
+import { ProfileService } from './profile.service';
 
 @Module({
   imports: [AgentModule, TypeOrmModule.forFeature([Agent])],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, MailingService],
+  controllers: [ProfileController],
+  providers: [AuthService, MailingService, ProfileService],
 })
-export class AuthModule {}
+export class ProfileModule {}
