@@ -82,7 +82,7 @@ export class AuthService {
       if (entityFound) {
         throw new HttpException(null, HttpStatus.CONFLICT);
       } else {
-        const verificationCode: string = bcrypt.hashSync(dto.email, 5);
+        const verificationCode: string = await bcrypt.hash(dto.email, 5);
         const entityNew = await this.insert(dto);
         const tokenPayload = await this.createToken({
           id: entityNew.id,

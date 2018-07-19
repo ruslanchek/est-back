@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Api, IApiResult, IApiResultOne } from '../api';
 import { Agent } from '../agent/agent.entity';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ProfileService {
@@ -43,7 +44,10 @@ export class ProfileService {
       const findResult: Agent = await this.agentServiceRepository.findOne(id);
 
       if (findResult) {
-        await this.agentServiceRepository.save(Object.assign(findResult, dto));
+        await this.agentServiceRepository.update(
+          { id },
+          dto,
+        );
         const entity: Agent = await this.agentServiceRepository.findOne(id);
 
         return Api.result<IApiResultOne<Agent>>({
@@ -59,15 +63,27 @@ export class ProfileService {
 
   public async updatePassword(id: number, dto: UpdateProfilePasswordDto): Promise<IApiResult<IApiResultOne<Agent>>> {
     try {
-      const findResult: Agent = await this.agentServiceRepository.findOne(id);
+      const findResult: Agent = await this.agentServiceRepository.findOne(id, {
+        select: ['password'],
+      });
 
       if (findResult) {
-        await this.agentServiceRepository.save(Object.assign(findResult, dto));
-        const entity: Agent = await this.agentServiceRepository.findOne(id);
+        const passwordChecked: boolean = await bcrypt.compare(dto.oldPassword, findResult.password);
 
-        return Api.result<IApiResultOne<Agent>>({
-          entity,
-        });
+        if (passwordChecked) {
+          const hashedPassword: string = await bcrypt.hash(dto.password, 10);
+          await this.agentServiceRepository.update(
+            { id },
+            { password: hashedPassword },
+          );
+          const entity: Agent = await this.agentServiceRepository.findOne(id);
+
+          return Api.result<IApiResultOne<Agent>>({
+            entity,
+          });
+        } else {
+          throw new HttpException(null, HttpStatus.BAD_REQUEST);
+        }
       } else {
         throw new HttpException(null, HttpStatus.NOT_FOUND);
       }
