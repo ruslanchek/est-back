@@ -13,6 +13,31 @@ export class ProfileService {
   ) {
   }
 
+  public async getProfile(id: number): Promise<IApiResult<IApiResultOne<Agent>>> {
+    try {
+      const entity: Agent = await this.agentServiceRepository.findOne(id, {
+        select: [
+          'id',
+          'email',
+          'emailVerified',
+          'name',
+          'phone',
+          'type',
+        ],
+      });
+
+      if (entity) {
+        return Api.result<IApiResultOne<Agent>>({
+          entity,
+        });
+      } else {
+        throw new HttpException(null, HttpStatus.NOT_FOUND);
+      }
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   public async update(id: number, dto: UpdateProfileDto): Promise<IApiResult<IApiResultOne<Agent>>> {
     try {
       const findResult: Agent = await this.agentServiceRepository.findOne(id);
