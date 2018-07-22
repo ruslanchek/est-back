@@ -8,7 +8,7 @@ export interface IApiResult<Payload> {
 export interface IApiResultError {
   status: HttpStatus;
   code: string;
-  fields?: string[];
+  fields?: {[field: string]: string};
   details?: any;
 }
 

@@ -58,6 +58,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       }
 
       default : {
+        status = HttpStatus.INTERNAL_SERVER_ERROR;
         code = 'INTERNAL_SERVER_ERROR';
         console.log(`Error`, request.method, request.originalUrl, exception.message);
         break;
@@ -65,10 +66,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     response
-      .status(status)
+      .status(status === HttpStatus.INTERNAL_SERVER_ERROR ? status : 200)
       .json({
         payload: null,
         error: {
+          status,
           code,
           details,
         },

@@ -26,14 +26,7 @@ export class AdvertController {
   async create(@Request() req, @Body(new ValidationPipe()) dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
     const { user } = req;
 
-    if (user && user.id) {
-      return await this.advertService.insert(user.id, dto);
-    } else {
-      return Api.error({
-        status: HttpStatus.FORBIDDEN,
-        code: 'FORBIDDEN',
-      });
-    }
+    return await this.advertService.insert(user.id, dto);
   }
 
   @Patch(':id')
@@ -41,13 +34,6 @@ export class AdvertController {
   async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAdvertDto): Promise<IApiResult<IApiResultOne<Advert>>> {
     const { user } = req;
 
-    if (user && user.id) {
-      return await this.advertService.update(user.id, params.id, dto);
-    } else {
-      return Api.error({
-        status: HttpStatus.FORBIDDEN,
-        code: 'FORBIDDEN',
-      });
-    }
+    return await this.advertService.update(user.id, params.id, dto);
   }
 }
