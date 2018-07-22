@@ -27,7 +27,10 @@ export class AdvertService {
           entity,
         });
       } else {
-        throw new HttpException(null, HttpStatus.NOT_FOUND);
+        return Api.error({
+          status: HttpStatus.NOT_FOUND,
+          code: 'ENTITY_NOT_FOUND',
+        });
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -59,7 +62,10 @@ export class AdvertService {
           id: result.identifiers[0].id,
         });
       } else {
-        throw new HttpException(null, HttpStatus.BAD_REQUEST);
+        return Api.error({
+          status: HttpStatus.BAD_REQUEST,
+          code: 'BAD_REQUEST',
+        });
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,7 +93,10 @@ export class AdvertService {
           throw new HttpException(null, HttpStatus.FORBIDDEN);
         }
       } else {
-        throw new HttpException(null, HttpStatus.NOT_FOUND);
+        return Api.error({
+          status: HttpStatus.NOT_FOUND,
+          code: 'ENTITY_NOT_FOUND',
+        });
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);

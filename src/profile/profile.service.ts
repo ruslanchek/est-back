@@ -58,7 +58,10 @@ export class ProfileService {
           entity,
         });
       } else {
-        throw new HttpException(null, HttpStatus.NOT_FOUND);
+        return Api.error({
+          status: HttpStatus.NOT_FOUND,
+          code: 'NOT_FOUND',
+        });
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -97,10 +100,16 @@ export class ProfileService {
             entity,
           });
         } else {
-          throw new HttpException(null, HttpStatus.BAD_REQUEST);
+          return Api.error({
+            status: HttpStatus.BAD_REQUEST,
+            code: 'BAD_REQUEST',
+          });
         }
       } else {
-        throw new HttpException(null, HttpStatus.NOT_FOUND);
+        return Api.error({
+          status: HttpStatus.NOT_FOUND,
+          code: 'NOT_FOUND',
+        });
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);

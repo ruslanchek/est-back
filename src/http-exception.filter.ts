@@ -2,11 +2,6 @@ import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/commo
 import { HttpException } from '@nestjs/common';
 import express from 'express';
 
-export interface IApiResultError {
-  code: string;
-  details?: any;
-}
-
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {

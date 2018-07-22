@@ -3,7 +3,7 @@ import { AdvertService } from './advert.service';
 import { Advert } from './advert.entity';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
 import { ValidationPipe } from '../validation.pipe';
-import { IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
+import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('/api/advert')
@@ -29,7 +29,10 @@ export class AdvertController {
     if (user && user.id) {
       return await this.advertService.insert(user.id, dto);
     } else {
-      throw new HttpException(null, HttpStatus.FORBIDDEN);
+      return Api.error({
+        status: HttpStatus.FORBIDDEN,
+        code: 'FORBIDDEN',
+      });
     }
   }
 
@@ -41,7 +44,10 @@ export class AdvertController {
     if (user && user.id) {
       return await this.advertService.update(user.id, params.id, dto);
     } else {
-      throw new HttpException(null, HttpStatus.FORBIDDEN);
+      return Api.error({
+        status: HttpStatus.FORBIDDEN,
+        code: 'FORBIDDEN',
+      });
     }
   }
 }

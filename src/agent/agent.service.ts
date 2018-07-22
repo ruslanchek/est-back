@@ -33,7 +33,10 @@ export class AgentService {
           entity,
         });
       } else {
-        throw new HttpException(null, HttpStatus.NOT_FOUND);
+        return Api.error({
+          status: HttpStatus.NOT_FOUND,
+          code: 'ENTITY_NOT_FOUND',
+        });
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);

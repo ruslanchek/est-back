@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Request, UseGuards } from '@nestjs/common';
-import { IApiResult, IApiResultOne } from '../api';
+import { Api, IApiResult, IApiResultOne } from '../api';
 import { ValidationPipe } from '../validation.pipe';
 import { Agent } from '../agent/agent.entity';
 import { AuthGuard } from '@nestjs/passport';
@@ -18,11 +18,7 @@ export class ProfileController {
   async getUser(@Request() req): Promise<IApiResult<IApiResultOne<Agent>>> {
     const { user } = req;
 
-    if (user && user.id) {
-      return await this.profileService.getProfile(user.id);
-    } else {
-      throw new HttpException(null, HttpStatus.FORBIDDEN);
-    }
+    return await this.profileService.getProfile(user.id);
   }
 
   @Patch('update')
@@ -30,11 +26,7 @@ export class ProfileController {
   async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateProfileDto): Promise<IApiResult<IApiResultOne<Agent>>> {
     const { user } = req;
 
-    if (user && user.id) {
-      return await this.profileService.update(user.id, dto);
-    } else {
-      throw new HttpException(null, HttpStatus.FORBIDDEN);
-    }
+    return await this.profileService.update(user.id, dto);
   }
 
   @Patch('update-password')
@@ -46,10 +38,6 @@ export class ProfileController {
   ): Promise<IApiResult<IApiResultOne<Agent>>> {
     const { user } = req;
 
-    if (user && user.id) {
-      return await this.profileService.updatePassword(user.id, dto);
-    } else {
-      throw new HttpException(null, HttpStatus.FORBIDDEN);
-    }
+    return await this.profileService.updatePassword(user.id, dto);
   }
 }

@@ -51,10 +51,16 @@ export class AuthService {
 
           return Api.result<ITokenPayload>(tokenPayload);
         } else {
-          throw new HttpException(null, HttpStatus.UNAUTHORIZED);
+          return Api.error({
+            status: HttpStatus.UNAUTHORIZED,
+            code: 'WRONG_CREDENTIALS',
+          });
         }
       } else {
-        throw new HttpException(null, HttpStatus.UNAUTHORIZED);
+        return Api.error({
+          status: HttpStatus.UNAUTHORIZED,
+          code: 'WRONG_CREDENTIALS',
+        });
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -80,7 +86,10 @@ export class AuthService {
       const entityFound = await this.findOneByEmail(dto.email);
 
       if (entityFound) {
-        throw new HttpException(null, HttpStatus.CONFLICT);
+        return Api.error({
+          status: HttpStatus.CONFLICT,
+          code: 'CONFLICT',
+        });
       } else {
         const verificationCode: string = await bcrypt.hash(dto.email, 5);
         const name = dto.email.match(/^([^@]*)@/)[1];

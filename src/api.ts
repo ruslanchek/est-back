@@ -1,8 +1,15 @@
-import { IApiResultError } from './http-exception.filter';
+import { HttpStatus } from '@nestjs/common';
 
 export interface IApiResult<Payload> {
   payload: Payload;
   error: IApiResultError;
+}
+
+export interface IApiResultError {
+  status: HttpStatus;
+  code: string;
+  fields?: string[];
+  details?: any;
 }
 
 export interface IApiResultCreate {
@@ -22,6 +29,13 @@ export class Api {
     return {
       payload,
       error: null,
+    };
+  }
+
+  static error(error: IApiResultError): IApiResult<any> {
+    return {
+      payload: null,
+      error,
     };
   }
 }
