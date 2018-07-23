@@ -40,4 +40,16 @@ export class ProfileController {
 
     return await this.profileService.updatePassword(user.id, dto);
   }
+
+  @Patch('post')
+  @UseGuards(AuthGuard('jwt'))
+  async updateAvatar(
+    @Request() req,
+    @Param() params,
+    @Body(new ValidationPipe()) dto: UpdateProfilePasswordDto,
+  ): Promise<IApiResult<IApiResultOne<Agent>>> {
+    const { user } = req;
+
+    return await this.profileService.updatePassword(user.id, dto);
+  }
 }

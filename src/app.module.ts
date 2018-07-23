@@ -4,7 +4,7 @@ import { LoggerMiddleware } from './logger.middleware';
 import { AdvertModule } from './advert/advert.module';
 import { AgentModule } from './agent/agent.module';
 import { AuthModule } from './auth/auth.module';
-import {parse} from 'pg-connection-string';
+import { parse } from 'pg-connection-string';
 import { ProfileModule } from './profile/profile.module';
 
 const PG_CONFIG = parse(process.env.DATABASE_URL);
@@ -30,8 +30,6 @@ const PG_CONFIG = parse(process.env.DATABASE_URL);
 })
 export class ApplicationModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(LoggerMiddleware)
-      .forRoutes('/api');
+    consumer.apply(LoggerMiddleware).forRoutes('/api');
   }
 }
