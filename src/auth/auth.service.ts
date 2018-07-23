@@ -91,21 +91,28 @@ export class AuthService {
           code: 'CONFLICT',
         });
       } else {
-        const verificationCode: string = await bcrypt.hash(dto.email, 5);
-        const name = dto.email.match(/^([^@]*)@/)[1];
-        const entityNew = await this.insert(Object.assign(dto, { name }));
-        const tokenPayload = await this.createToken({
-          id: entityNew.id,
-        });
+        if (dto.email && dto.password) {
+          const verificationCode: string = await bcrypt.hash(dto.email, 5);
+          const name = dto.email.match(/^([^@]*)@/)[1];
+          const entityNew = await this.insert(Object.assign(dto, { name }));
+          const tokenPayload = await this.createToken({
+            id: entityNew.id,
+          });
 
-        await this.mailingService.sendWelcome({
-          agentName: name,
-          agentEmail: dto.email,
-          agentId: entityNew.id,
-          verificationCode,
-        });
+          await this.mailingService.sendWelcome({
+            agentName: name,
+            agentEmail: dto.email,
+            agentId: entityNew.id,
+            verificationCode,
+          });
 
-        return Api.result<ITokenPayload>(tokenPayload);
+          return Api.result<ITokenPayload>(tokenPayload);
+        } else {
+          return Api.error({
+            status: HttpStatus.BAD_REQUEST,
+            code: 'BAD_REQUEST',
+          });
+        }
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
