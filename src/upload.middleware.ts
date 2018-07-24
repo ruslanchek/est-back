@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware, MiddlewareFunction } from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import * as multer from 'multer';
 
 @Injectable()
