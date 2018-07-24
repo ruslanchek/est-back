@@ -6,6 +6,7 @@ import { Agent } from '../agent/agent.entity';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
 import * as bcrypt from 'bcrypt';
 import { MailingService } from '../mailing.service';
+import { IFile, UploadService } from '../upload.service';
 
 const PERSONAL_ENTITY_SELECT_FIELDS: FindOneOptions<Agent> = {
   select: [
@@ -24,6 +25,7 @@ export class ProfileService {
     @InjectRepository(Agent)
     private readonly agentServiceRepository: Repository<Agent>,
     private readonly mailingService: MailingService,
+    private readonly uploadService: UploadService,
   ) {
   }
 
@@ -115,6 +117,14 @@ export class ProfileService {
           code: 'NOT_FOUND',
         });
       }
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async updateAvatar(id: number, file: IFile): Promise<any> {
+    try {
+      this.uploadService.upload(file);
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }

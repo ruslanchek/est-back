@@ -18,6 +18,7 @@ import { Agent } from '../agent/agent.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
+import { IFile } from '../upload.service';
 
 @Controller('/api/profile')
 export class ProfileController {
@@ -59,8 +60,10 @@ export class ProfileController {
   @UseGuards(AuthGuard('jwt'))
   async updateAvatar(
     @Request() req,
-    @UploadedFile() file,
+    @UploadedFile() file: IFile,
   ) {
-    console.log(file, req.user);
+    const { user } = req;
+
+    return await this.profileService.updateAvatar(user.id, file);
   }
 }
