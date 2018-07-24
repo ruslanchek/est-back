@@ -1,18 +1,22 @@
 {
-  "apps": [
-    {
-      "script": "./dist/main.js",
-      "watch": false,
-      "env": {
-        "PORT": 5566,
-        "NODE_ENV": "production",
-        "DATABASE_URL": "postgres://realthub:Tukzara2044@realthub.com:5432/realthub"
-      },
-      "name": "realthub.com",
-      "instances": 1,
-      "exec_mode": "cluster",
-      "error_file": "error-app.log",
-      "out_file": "out-app.log"
-    }
-  ]
+	"apps": [
+		{
+			"script": "./dist/main.js",
+			"watch": false,
+			"env": {
+				"PORT": 5566,
+				"NODE_ENV": "production",
+				"DATABASE_URL": "postgres://realthub:Tukzara2044@realthub.com:5432/realthub",
+				"S3_KEY": "4LE7IDJ3NQGU7JX4C262",
+				"S3_SECRET": "GNGjB+L0mXvqYzlMTp2eAS4hqtkMEGNOrWnEblh820Q",
+				"S3_ENDPOINT": "ams3.digitaloceanspaces.com",
+				"S3_BUCKET": "content-realthub-com"
+			},
+			"name": "realthub.com",
+			"instances": 1,
+			"exec_mode": "cluster",
+			"error_file": "error-app.log",
+			"out_file": "out-app.log"
+		}
+	]
 }

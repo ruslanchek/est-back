@@ -15,18 +15,18 @@ export class UploadService {
   private readonly s3;
 
   constructor() {
-    this.spacesEndpoint = new AWS.Endpoint('ams3.digitaloceanspaces.com');
+    this.spacesEndpoint = new AWS.Endpoint(process.env.S3_ENDPOINT);
     this.s3 = new AWS.S3({
       endpoint: this.spacesEndpoint,
-      accessKeyId: '4LE7IDJ3NQGU7JX4C262',
-      secretAccessKey: 'GNGjB+L0mXvqYzlMTp2eAS4hqtkMEGNOrWnEblh820Q',
+      accessKeyId: process.env.S3_KEY,
+      secretAccessKey: process.env.S3_SECRET,
     });
   }
 
   upload(file: IFile) {
     const params = {
       Body: file.buffer.toString(),
-      Bucket: 'content-realthub-com',
+      Bucket: process.env.S3_BUCKET,
       Key: 'file.ext',
     };
 
