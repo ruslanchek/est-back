@@ -1,20 +1,22 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Api, IApiResult, IApiResultOne } from '../api';
 import { Agent } from '../agent/agent.entity';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
 import * as bcrypt from 'bcrypt';
 import { MailingService } from '../mailing.service';
 
-const PERSONAL_ENTITY_SELECT_FIELDS = [
-  'id',
-  'email',
-  'emailVerified',
-  'name',
-  'phone',
-  'type',
-];
+const PERSONAL_ENTITY_SELECT_FIELDS: FindOneOptions<Agent> = {
+  select: [
+    'id',
+    'email',
+    'emailVerified',
+    'name',
+    'phone',
+    'type',
+  ],
+};
 
 @Injectable()
 export class ProfileService {
@@ -27,9 +29,10 @@ export class ProfileService {
 
   public async getProfile(id: number): Promise<IApiResult<IApiResultOne<Agent>>> {
     try {
-      const entity: Agent = await this.agentServiceRepository.findOne(id, {
-        select: PERSONAL_ENTITY_SELECT_FIELDS,
-      });
+      const entity: Agent = await this.agentServiceRepository.findOne(
+        { id },
+        PERSONAL_ENTITY_SELECT_FIELDS,
+      );
 
       if (entity) {
         return Api.result<IApiResultOne<Agent>>({
@@ -85,9 +88,10 @@ export class ProfileService {
             { id },
             { password: hashedPassword },
           );
-          const entity: Agent = await this.agentServiceRepository.findOne({ id }, {
-            select: PERSONAL_ENTITY_SELECT_FIELDS,
-          });
+          const entity: Agent = await this.agentServiceRepository.findOne(
+            { id },
+            PERSONAL_ENTITY_SELECT_FIELDS,
+          );
 
           await this.mailingService.sendPasswordChanged({
             agentName: entity.name,

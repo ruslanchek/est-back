@@ -1,4 +1,17 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Patch, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  FileInterceptor,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Request, UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Api, IApiResult, IApiResultOne } from '../api';
 import { ValidationPipe } from '../validation.pipe';
 import { Agent } from '../agent/agent.entity';
@@ -41,15 +54,13 @@ export class ProfileController {
     return await this.profileService.updatePassword(user.id, dto);
   }
 
-  @Patch('post')
+  @Post('update-avatar')
+  @UseInterceptors(FileInterceptor('file'))
   @UseGuards(AuthGuard('jwt'))
   async updateAvatar(
     @Request() req,
-    @Param() params,
-    @Body(new ValidationPipe()) dto: UpdateProfilePasswordDto,
-  ): Promise<IApiResult<IApiResultOne<Agent>>> {
-    const { user } = req;
-
-    return await this.profileService.updatePassword(user.id, dto);
+    @UploadedFile() file,
+  ) {
+    console.log(file, req.user);
   }
 }
