@@ -24,17 +24,17 @@ export class UploadService {
   }
 
   upload(file: IFile, location: string, fileName: string, meta?: { [key: string]: string }) {
+    console.log(file, location, fileName, meta);
+
     const params = {
       Body: file.buffer,
       ACL: 'public-read',
       Bucket: process.env.S3_BUCKET,
-      Key: location,
+      Key: `${location}${fileName}`,
       ContentType: file.mimetype,
       ContentEncoding: file.encoding,
       Metadata: meta || {},
     };
-
-    console.log(params)
 
     this.s3.putObject(params, (err, data) => {
       console.log(err, data);

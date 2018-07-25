@@ -7,8 +7,8 @@
 				"PORT": 5566,
 				"NODE_ENV": "production",
 				"DATABASE_URL": "postgres://realthub:Tukzara2044@realthub.com:5432/realthub",
-				"S3_KEY": "4LE7IDJ3NQGU7JX4C262",
-				"S3_SECRET": "GNGjB+L0mXvqYzlMTp2eAS4hqtkMEGNOrWnEblh820Q",
+				"S3_KEY": "AYN4EVFWKFB2TSX2WLFX",
+				"S3_SECRET": "KfYRDaoQPfJsA4dEsPF1PanU+OWF32sqvKJpbffqODI",
 				"S3_ENDPOINT": "ams3.digitaloceanspaces.com",
 				"S3_BUCKET": "content-realthub-com"
 			},

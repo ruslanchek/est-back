@@ -56,15 +56,13 @@ export class ProfileController {
   }
 
   @Post('update-avatar')
-  @UseInterceptors(FileInterceptor('file'))
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
   async updateAvatar(
     @Request() req,
     @UploadedFile() file: IFile,
   ) {
     const { user } = req;
-
-    console.log(user);
 
     return await this.profileService.updateAvatar(user.id, file);
   }
