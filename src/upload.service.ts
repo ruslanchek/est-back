@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
+import { IApiResult, IApiResultList } from './api';
 
 export interface IFile {
   fieldname: string;
@@ -7,6 +8,11 @@ export interface IFile {
   encoding: string;
   mimetype: string;
   buffer: Buffer;
+}
+
+export interface IFileResult {
+  path: string;
+  name: string;
 }
 
 @Injectable()
@@ -23,9 +29,7 @@ export class UploadService {
     });
   }
 
-  upload(file: IFile, location: string, fileName: string, meta?: { [key: string]: string }) {
-    console.log(file, location, fileName, meta);
-
+  async upload(file: IFile, location: string, fileName: string, meta?: { [key: string]: string }): Promise<IFileResult> {
     const params = {
       Body: file.buffer,
       ACL: 'public-read',
@@ -36,8 +40,14 @@ export class UploadService {
       Metadata: meta || {},
     };
 
-    this.s3.putObject(params, (err, data) => {
-      console.log(err, data);
+    return new Promise<IFileResult>((resolve, reject) => {
+      this.s3.putObject(params, (err, data) => {
+        if (err) {
+          reject();
+        } else {
+          resolve();
+        }
+      });
     });
   }
 }
