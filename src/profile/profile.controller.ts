@@ -64,6 +64,8 @@ export class ProfileController {
   ) {
     const { user } = req;
 
+    console.log(user);
+
     return await this.profileService.updateAvatar(user.id, file);
   }
 }

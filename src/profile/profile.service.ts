@@ -124,7 +124,9 @@ export class ProfileService {
 
   public async updateAvatar(id: number, file: IFile): Promise<any> {
     try {
-      this.uploadService.upload(file);
+      this.uploadService.upload(file, `/agents/${id}`, 'avatar.png', {
+        agent: id.toString(),
+      });
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
