@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
+import { Utils } from './utils';
 
 export interface IFile {
   fieldname: string;
@@ -29,11 +30,13 @@ export class UploadService {
   }
 
   async upload(file: IFile, location: string, fileName: string, meta?: { [key: string]: string }): Promise<IFileResult> {
+    const path: string = Utils.removeDoubleSlashes(`${location}/${fileName}`);
+
     const params = {
       Body: file.buffer,
       ACL: 'public-read',
       Bucket: process.env.S3_BUCKET,
-      Key: `${location}/${fileName}`,
+      Key: path,
       ContentType: file.mimetype,
       ContentEncoding: file.encoding,
       Metadata: meta || {},
@@ -44,7 +47,10 @@ export class UploadService {
         if (err) {
           reject();
         } else {
-          resolve();
+          resolve({
+            path,
+            name: fileName,
+          });
         }
       });
     });

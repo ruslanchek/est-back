@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
-import { Api, IApiResult, IApiResultOne } from '../api';
+import { Api, IApiResult, IApiResultOne, IApiResultUploadFile } from '../api';
 import { Agent } from '../agent/agent.entity';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
 import * as bcrypt from 'bcrypt';
 import { MailingService } from '../mailing.service';
-import { IFile, UploadService } from '../upload.service';
+import { IFile, IFileResult, UploadService } from '../upload.service';
 
 const PERSONAL_ENTITY_SELECT_FIELDS: FindOneOptions<Agent> = {
   select: [
@@ -122,10 +122,14 @@ export class ProfileService {
     }
   }
 
-  public async updateAvatar(id: number, file: IFile): Promise<any> {
+  public async updateAvatar(id: number, file: IFile): Promise<IApiResult<IApiResultUploadFile>> {
     try {
-      this.uploadService.upload(file, `agents/${id}`, 'avatar.png', {
+      const fileResult: IFileResult = await this.uploadService.upload(file, `agents/${id}/`, 'avatar.png', {
         agent: id.toString(),
+      });
+
+      return Api.result<IApiResultUploadFile>({
+        file: fileResult,
       });
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
