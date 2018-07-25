@@ -6,7 +6,7 @@ import { Agent } from '../agent/agent.entity';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
 import * as bcrypt from 'bcrypt';
 import { MailingService } from '../mailing.service';
-import { IFile, IFileResult, UploadService } from '../upload.service';
+import { IFile, IFileResult, MAX_UPLOAD_SIZE, UploadService } from '../upload.service';
 
 const PERSONAL_ENTITY_SELECT_FIELDS: FindOneOptions<Agent> = {
   select: [
@@ -124,9 +124,17 @@ export class ProfileService {
 
   public async updateAvatar(id: number, file: IFile): Promise<IApiResult<IApiResultUploadFile>> {
     try {
-      const fileResult: IFileResult = await this.uploadService.upload(file, `agents/${id}/`, 'avatar.png', {
-        agent: id.toString(),
-      });
+      const fileResult: IFileResult = await this.uploadService.upload(
+        file,
+        `agents/${id}/`,
+        'avatar.png',
+        MAX_UPLOAD_SIZE.AVATAR,
+        {
+          entityId: id.toString(),
+          entityKind: 'avatar',
+          entityType: 'id',
+        },
+      );
 
       return Api.result<IApiResultUploadFile>({
         file: fileResult,

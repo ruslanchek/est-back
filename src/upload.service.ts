@@ -15,6 +15,17 @@ export interface IFileResult {
   name: string;
 }
 
+export interface IFileMeta {
+  entityId: string;
+  entityType: string;
+  entityKind: string;
+}
+
+export const MAX_UPLOAD_SIZE = {
+  AVATAR: 5242880, // 5 MB
+  OBJECT_PICTURE: 26214400, // 25 MB
+};
+
 @Injectable()
 export class UploadService {
   private readonly spacesEndpoint;
@@ -29,20 +40,24 @@ export class UploadService {
     });
   }
 
-  async upload(file: IFile, location: string, fileName: string, meta?: { [key: string]: string }): Promise<IFileResult> {
-    const path: string = Utils.removeDoubleSlashes(`${location}/${fileName}`);
-
-    const params = {
-      Body: file.buffer,
-      ACL: 'public-read',
-      Bucket: process.env.S3_BUCKET,
-      Key: path,
-      ContentType: file.mimetype,
-      ContentEncoding: file.encoding,
-      Metadata: meta || {},
-    };
-
+  async upload(file: IFile, location: string, fileName: string, maxSize: number, meta?: IFileMeta): Promise<IFileResult> {
     return new Promise<IFileResult>((resolve, reject) => {
+      const path: string = Utils.removeDoubleSlashes(`${location}/${fileName}`);
+
+      if (file.buffer.byteLength > maxSize) {
+        return reject('MAX_SIZE');
+      }
+
+      const params = {
+        Body: file.buffer,
+        ACL: 'public-read',
+        Bucket: process.env.S3_BUCKET,
+        Key: path,
+        ContentType: file.mimetype,
+        ContentEncoding: file.encoding,
+        Metadata: meta || {},
+      };
+
       this.s3.putObject(params, (err, data) => {
         if (err) {
           reject();
