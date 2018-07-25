@@ -30,7 +30,7 @@ export class UploadService {
       Body: file.buffer,
       ACL: 'public-read',
       Bucket: process.env.S3_BUCKET,
-      Key: `${location}${fileName}`,
+      Key: `${location}/${fileName}`,
       ContentType: file.mimetype,
       ContentEncoding: file.encoding,
       Metadata: meta || {},
