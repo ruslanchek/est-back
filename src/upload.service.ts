@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
-import { IApiResult, IApiResultList } from './api';
 
 export interface IFile {
   fieldname: string;
