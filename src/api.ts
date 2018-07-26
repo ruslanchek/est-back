@@ -25,10 +25,6 @@ export interface IApiResultUploadFile {
   file: IFileResult;
 }
 
-export interface IApiResultUploadFiles {
-  files: IFileResult[];
-}
-
 export interface IApiResultOne<Entity> {
   entity: Entity;
 }
