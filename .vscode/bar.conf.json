@@ -1,5 +1,5 @@
 {
     "commands":{
-        "run":"yarn start"
+        "run":"PORT=5566 NODE_ENV=development DATABASE_URL=postgres://realthub:Tukzara2044@realthub.com:5432/realthub S3_KEY=AYN4EVFWKFB2TSX2WLFX S3_SECRET=KfYRDaoQPfJsA4dEsPF1PanU+OWF32sqvKJpbffqODI S3_ENDPOINT=ams3.digitaloceanspaces.com S3_BUCKET=content-realthub-com AUTH_POLICY_EXPIRES=2592000 AUTH_POLICY_SECRET=_wox8l^61VyWXfZyOefU^^m@q7$xtsN yarn start"
     }
 }
