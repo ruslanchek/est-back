@@ -8,6 +8,12 @@ export class Agent {
   id: number;
 
   @Column({
+    default: false,
+    select: true,
+  })
+  avatar: boolean;
+
+  @Column({
     unique: true,
     select: false,
   })

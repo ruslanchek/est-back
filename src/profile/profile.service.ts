@@ -11,6 +11,7 @@ import { IFile, IFileResult, MAX_UPLOAD_SIZE, UploadService } from '../upload.se
 const PERSONAL_ENTITY_SELECT_FIELDS: FindOneOptions<Agent> = {
   select: [
     'id',
+    'avatar',
     'email',
     'emailVerified',
     'name',
@@ -134,6 +135,11 @@ export class ProfileService {
           entityKind: 'avatar',
           entityType: 'id',
         },
+      );
+
+      await this.agentServiceRepository.update(
+        { id },
+        { avatar: true, },
       );
 
       return Api.result<IApiResultUploadFile>({
