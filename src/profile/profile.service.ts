@@ -124,7 +124,7 @@ export class ProfileService {
 
   public async updateAvatar(id: number, file: IFile): Promise<IApiResult<IApiResultUploadFile>> {
     try {
-      const fileResult: IFileResult = await this.uploadService.upload(
+      const fileResult: IFileResult = await this.uploadService.uploadImage(
         file,
         `agents/${id}/`,
         'avatar.png',

@@ -10,6 +10,11 @@ export interface IFile {
   buffer: Buffer;
 }
 
+export interface IFileTypes {
+  extension: string;
+  mimeType: string;
+}
+
 export interface IFileResult {
   path: string;
   name: string;
@@ -26,6 +31,28 @@ export const MAX_UPLOAD_SIZE = {
   OBJECT_PICTURE: 26214400, // 25 MB
 };
 
+export const IMAGE_EXTENSIONS: IFileTypes[] = [
+  {
+    extension: 'jpg',
+    mimeType: 'image/jpeg',
+  },
+
+  {
+    extension: 'jpeg',
+    mimeType: 'image/jpeg',
+  },
+
+  {
+    extension: 'jpe',
+    mimeType: 'image/jpeg',
+  },
+
+  {
+    extension: 'png',
+    mimeType: 'image/png',
+  },
+];
+
 @Injectable()
 export class UploadService {
   private readonly spacesEndpoint;
@@ -40,12 +67,33 @@ export class UploadService {
     });
   }
 
-  async upload(file: IFile, location: string, fileName: string, maxSize: number, meta?: IFileMeta): Promise<IFileResult> {
+  checkFileType(file: IFile): boolean {
+    let result: boolean = false;
+    const ext: string = this.extractExtension(file.originalname);
+
+    IMAGE_EXTENSIONS.forEach(element => {
+      if(element.extension === ext && element.mimeType === file.mimetype) {
+        result = true;
+      }
+    });
+
+    return result;
+  }
+
+  extractExtension(filename: string): string {
+    return filename.split('.').pop();
+  }
+
+  async uploadImage(file: IFile, location: string, fileName: string, maxSize: number, meta?: IFileMeta): Promise<IFileResult> {
     return new Promise<IFileResult>((resolve, reject) => {
       const path: string = Utils.removeDoubleSlashes(`${location}/${fileName}`);
 
       if (file.buffer.byteLength > maxSize) {
         return reject('MAX_SIZE');
+      }
+
+      if(!this.checkFileType(file)) {
+        return reject('WRONG_FILE_TYPE');
       }
 
       const params = {
