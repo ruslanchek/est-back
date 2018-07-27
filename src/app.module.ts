@@ -6,6 +6,7 @@ import { AgentModule } from './agent/agent.module';
 import { AuthModule } from './auth/auth.module';
 import { parse } from 'pg-connection-string';
 import { ProfileModule } from './profile/profile.module';
+import { AdvertImageModule } from './advert-image/advert-image.module';
 
 const PG_CONFIG = parse(process.env.DATABASE_URL);
 
@@ -23,6 +24,7 @@ const PG_CONFIG = parse(process.env.DATABASE_URL);
       synchronize: true,
     }),
     AdvertModule,
+    AdvertImageModule,
     AgentModule,
     ProfileModule,
     AuthModule,

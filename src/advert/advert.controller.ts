@@ -1,25 +1,10 @@
-import {
-  Get,
-  Controller,
-  Query,
-  Post,
-  HttpStatus,
-  HttpException,
-  Body,
-  Patch,
-  Put,
-  Param,
-  UseGuards,
-  Request,
-  UseInterceptors, FileInterceptor, UploadedFile,
-} from '@nestjs/common';
+import { Controller, Get, Param, Patch, Post, Body, Request, UseGuards } from '@nestjs/common';
 import { AdvertService } from './advert.service';
 import { Advert } from './advert.entity';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
 import { ValidationPipe } from '../validation.pipe';
-import { Api, IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
+import { IApiResult, IApiResultCreate, IApiResultList, IApiResultOne } from '../api';
 import { AuthGuard } from '@nestjs/passport';
-import { IFile } from '../upload.service';
 
 @Controller('/api/advert')
 export class AdvertController {
@@ -51,16 +36,4 @@ export class AdvertController {
 
     return await this.advertService.update(user.id, params.id, dto);
   }
-
-  // @Post('add-images')
-  // @UseGuards(AuthGuard('jwt'))
-  // @UseInterceptors(FileInterceptor('file'))
-  // async updateAvatar(
-  //   @Request() req,
-  //   @UploadedFile() file: IFile,
-  // ) {
-  //   const { user } = req;
-  //
-  //   return await this.profileService.updateAvatar(user.id, file);
-  // }
 }

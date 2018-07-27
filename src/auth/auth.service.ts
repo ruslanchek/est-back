@@ -16,6 +16,7 @@ import { AuthDto } from './auth.dto';
 export class AuthService {
   constructor(
     @InjectRepository(Agent)
+    // TODO: Use reposytory instead of service...
     private readonly agentServiceRepository: Repository<Agent>,
     private readonly agentService: AgentService,
     private readonly mailingService: MailingService,
