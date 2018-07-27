@@ -3,8 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AUTH_POLICY } from './auth.policy';
 import { IJwtPayload, ITokenPayload } from './auth.interface';
-import { AgentService } from '../agent/agent.service';
-import { Api, IApiResult, IApiResultCreate, IApiResultOne } from '../api';
+import { Api, IApiResult, IApiResultCreate } from '../api';
 import { Agent } from '../agent/agent.entity';
 import { MailingService } from '../mailing.service';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
@@ -16,9 +15,7 @@ import { AuthDto } from './auth.dto';
 export class AuthService {
   constructor(
     @InjectRepository(Agent)
-    // TODO: Use reposytory instead of service...
     private readonly agentServiceRepository: Repository<Agent>,
-    private readonly agentService: AgentService,
     private readonly mailingService: MailingService,
   ) {
   }
@@ -34,8 +31,8 @@ export class AuthService {
     };
   }
 
-  async validateUser(payload: IJwtPayload): Promise<IApiResult<IApiResultOne<Agent>>> {
-    return await this.agentService.findOne(payload.id);
+  async validateUser(payload: IJwtPayload): Promise<Agent> {
+    return await this.agentServiceRepository.findOne(payload.id);
   }
 
   async login(dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
