@@ -108,6 +108,11 @@ export class UploadService {
       .toBuffer();
   }
 
+  private async getFileInfo(file: IFile): Promise<Buffer> {
+    return sharp(file.buffer)
+      .metadata();
+  }
+
   public async uploadImage(
     file: IFile,
     location: string,
@@ -125,12 +130,16 @@ export class UploadService {
         return reject('WRONG_FILE_TYPE');
       }
 
+      const fileInfo = await this.getFileInfo(file);
+
+      console.log(fileInfo);
+
       if (resizeDimensions.length > 0) {
-        const resized: Buffer = await this.makeResizedCopy(file, resizeDimensions[0]);
+        const resize: Buffer = await this.makeResizedCopy(file, resizeDimensions[0]);
         const path: string = Utils.removeDoubleSlashes(`${location}/${fileName}.jpg`);
 
         const params = {
-          Body: resized,
+          Body: resize,
           ACL: 'public-read',
           Bucket: process.env.S3_BUCKET,
           Key: path,
