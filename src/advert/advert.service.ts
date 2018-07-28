@@ -80,15 +80,16 @@ export class AdvertService {
         if (findResult.agent.id === agentId) {
           await this.advertServiceRepository.save(Object.assign(findResult, dto));
 
-          const entity: Advert = await this.advertServiceRepository.findOne(id, {
-            relations: ['agent'],
-          });
+          const entity: Advert = await this.advertServiceRepository.findOne(id);
 
           return Api.result<IApiResultOne<Advert>>({
             entity,
           });
         } else {
-          throw new HttpException(null, HttpStatus.FORBIDDEN);
+          return Api.error({
+            status: HttpStatus.FORBIDDEN,
+            code: 'FORBIDDEN',
+          });
         }
       } else {
         return Api.error({

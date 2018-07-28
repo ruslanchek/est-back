@@ -6,7 +6,7 @@ import { Agent } from '../agent/agent.entity';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
 import * as bcrypt from 'bcrypt';
 import { MailingService } from '../mailing.service';
-import { IFile, IFileResult, MAX_UPLOAD_SIZE, UploadService } from '../upload.service';
+import { IFile, IFileResult, MAX_UPLOAD_SIZE, UPLOAD_IMAGE_RESIZE_DIMENSIONS, UploadService } from '../upload.service';
 
 const PERSONAL_ENTITY_SELECT_FIELDS: FindOneOptions<Agent> = {
   select: [
@@ -135,6 +135,9 @@ export class ProfileService {
           entityKind: 'avatar',
           entityType: 'id',
         },
+        [
+          UPLOAD_IMAGE_RESIZE_DIMENSIONS.AVATAR,
+        ],
       );
 
       await this.agentServiceRepository.update(
