@@ -14,7 +14,7 @@
 				"AUTH_POLICY_EXPIRES": "2592000",
 				"AUTH_POLICY_SECRET": "_wox8l^61VyWXfZyOefU^^m@q7$xtsN"
 			},
-			"name": "realthub.com",
+			"name": "realthub.com/api",
 			"instances": 1,
 			"exec_mode": "cluster",
 			"error_file": "error-app.log",
