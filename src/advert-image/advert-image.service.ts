@@ -41,7 +41,7 @@ export class AdvertImageService {
           },
           [
             UPLOAD_IMAGE_RESIZE_DIMENSIONS.IMAGE,
-            UPLOAD_IMAGE_RESIZE_DIMENSIONS.THUMB,
+            UPLOAD_IMAGE_RESIZE_DIMENSIONS.IMAGE_THUMB,
           ],
         );
 

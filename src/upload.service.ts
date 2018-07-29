@@ -28,7 +28,9 @@ export interface IFileMeta {
 }
 
 interface IResizeDimension {
-  sizes: [string, number, number];
+  name: string;
+  width: number;
+  height: number;
 }
 
 export const MAX_UPLOAD_SIZE = {
@@ -36,15 +38,21 @@ export const MAX_UPLOAD_SIZE = {
   OBJECT_PICTURE: 26214400, // 25 MB
 };
 
-export const UPLOAD_IMAGE_RESIZE_DIMENSIONS: { [name: string]: IResizeDimension } = {
+export const UPLOAD_IMAGE_RESIZE_DIMENSIONS = {
   AVATAR: {
-    sizes: [null, 256, 256],
+    name: 'default',
+    width: 256,
+    height: 256,
   },
   IMAGE: {
-    sizes: ['image', 1920, 1080],
+    name: 'big',
+    width: 1920,
+    height: 1080,
   },
   IMAGE_THUMB: {
-    sizes: ['thumb', 512, 512],
+    name: 'thumb',
+    width: 512,
+    height: 512,
   },
 };
 
@@ -69,6 +77,8 @@ export const IMAGE_EXTENSIONS: IFileTypes[] = [
     mimeType: 'image/png',
   },
 ];
+
+const JPEG_QUALITY = 90;
 
 @Injectable()
 export class UploadService {
@@ -97,20 +107,73 @@ export class UploadService {
     return result;
   }
 
-  extractExtension(filename: string): string {
+  private extractExtension(filename: string): string {
     return filename.split('.').pop();
   }
 
-  private async makeResizedCopy(file: IFile, size: IResizeDimension): Promise<Buffer> {
+  private putObject(params): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      this.s3.putObject(params, (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  private async makeResizeCopy(file: IFile, fileInfo, size: IResizeDimension): Promise<Buffer> {
+    const {width, height} = size;
+
     return sharp(file.buffer)
-      .resize(size.sizes[1], size.sizes[2])
-      .jpeg()
+      .withoutEnlargement()
+      .max()
+      .rotate()
+      .resize(width, height)
+      .jpeg({
+        quality: JPEG_QUALITY,
+      })
       .toBuffer();
   }
 
   private async getFileInfo(file: IFile): Promise<Buffer> {
     return sharp(file.buffer)
       .metadata();
+  }
+
+  private async uploadResizeCopies(file: IFile, location: string, fileName: string, resizeDimensions: IResizeDimension[], meta: IFileMeta) {
+    const fileInfo = await this.getFileInfo(file);
+
+    for (const resizeDimension of resizeDimensions) {
+      const resize: Buffer = await this.makeResizeCopy(file, fileInfo, resizeDimension);
+      const path: string = Utils.removeDoubleSlashes(`${location}/${resizeDimension.name}/${fileName}.jpg`);
+
+      await this.putObject({
+        Body: resize,
+        ACL: 'public-read',
+        Bucket: process.env.S3_BUCKET,
+        Key: path,
+        ContentType: 'image/jpeg',
+        Metadata: meta,
+      });
+
+      console.log('uploaded:', resizeDimension.name);
+    }
+  }
+
+  private async checkFile(file: IFile, maxSize: number): Promise<boolean | string> {
+    return new Promise<boolean>(async (resolve, reject) => {
+      if (file.buffer.byteLength > maxSize) {
+        return reject('MAX_SIZE');
+      }
+
+      if (!this.checkFileType(file)) {
+        return reject('WRONG_FILE_TYPE');
+      }
+
+      return resolve(true);
+    });
   }
 
   public async uploadImage(
@@ -120,46 +183,14 @@ export class UploadService {
     maxSize: number,
     meta: IFileMeta,
     resizeDimensions: IResizeDimension[],
-  ): Promise<IFileResult> {
-    return new Promise<IFileResult>(async (resolve, reject) => {
-      if (file.buffer.byteLength > maxSize) {
-        return reject('MAX_SIZE');
-      }
+  ): Promise<any> {
+    try {
+      await this.checkFile(file, maxSize);
+      await this.uploadResizeCopies(file, location, fileName, resizeDimensions, meta);
 
-      if (!this.checkFileType(file)) {
-        return reject('WRONG_FILE_TYPE');
-      }
-
-      const fileInfo = await this.getFileInfo(file);
-
-      console.log(fileInfo);
-
-      if (resizeDimensions.length > 0) {
-        const resize: Buffer = await this.makeResizedCopy(file, resizeDimensions[0]);
-        const path: string = Utils.removeDoubleSlashes(`${location}/${fileName}.jpg`);
-
-        const params = {
-          Body: resize,
-          ACL: 'public-read',
-          Bucket: process.env.S3_BUCKET,
-          Key: path,
-          ContentType: 'image/jpeg',
-          Metadata: meta,
-        };
-
-        this.s3.putObject(params, (err, data) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve({
-              path,
-              name: fileName,
-            });
-          }
-        });
-      } else {
-
-      }
-    });
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   }
 }
