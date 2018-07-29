@@ -143,14 +143,21 @@ export class ProfileService {
         ],
       );
 
-      await this.agentServiceRepository.update(
-        { id },
-        { avatar: fileResult[0].path },
-      );
+      if (fileResult) {
+        await this.agentServiceRepository.update(
+          { id },
+          { avatar: fileResult[0].path },
+        );
 
-      return Api.result<IApiResultUploadFile>({
-        files: fileResult,
-      });
+        return Api.result<IApiResultUploadFile>({
+          files: fileResult,
+        });
+      } else {
+        return Api.error({
+          status: HttpStatus.BAD_REQUEST,
+          code: 'UPLOAD_ERROR',
+        });
+      }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }

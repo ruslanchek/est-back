@@ -56,9 +56,16 @@ export class AdvertImageService {
           ],
         );
 
-        return Api.result<IApiResultUploadFile>({
-          files: fileResult,
-        });
+        if (fileResult) {
+          return Api.result<IApiResultUploadFile>({
+            files: fileResult,
+          });
+        } else {
+          return Api.error({
+            status: HttpStatus.BAD_REQUEST,
+            code: 'UPLOAD_ERROR',
+          });
+        }
       } else {
         return Api.error({
           status: HttpStatus.NOT_FOUND,

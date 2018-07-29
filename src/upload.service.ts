@@ -179,6 +179,10 @@ export class UploadService {
 
   private async checkFile(file: IFile, maxSize: number): Promise<boolean | string> {
     return new Promise<boolean>(async (resolve, reject) => {
+      if (!file || !file.buffer) {
+        return reject('NO_FILE');
+      }
+
       if (file.buffer.byteLength > maxSize) {
         return reject('MAX_SIZE');
       }
@@ -208,7 +212,6 @@ export class UploadService {
       return await this.uploadResizeCopies(file, location, fileName, resizeDimensions, meta);
 
     } catch (e) {
-      console.log(e);
       return null;
     }
   }
