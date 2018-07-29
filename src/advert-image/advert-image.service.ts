@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AdvertImage } from './advert-image.entity';
 import { Advert } from '../advert/advert.entity';
-import { IFile, IFileResult, MAX_UPLOAD_SIZE, UPLOAD_IMAGE_RESIZE_DIMENSIONS, UploadService } from '../upload.service';
+import { IFile, IFilesResult, MAX_UPLOAD_SIZE, UPLOAD_IMAGE_RESIZE_DIMENSIONS, UploadService } from '../upload.service';
 import { Api, IApiResult, IApiResultUploadFile } from '../api';
 
 @Injectable()
@@ -29,7 +29,7 @@ export class AdvertImageService {
         });
 
       if (findResult) {
-        const fileResult: IFileResult = await this.uploadService.uploadImage(
+        const fileResult: IFilesResult[] = await this.uploadService.uploadImage(
           file,
           `adverts/${agentId}/${objectId}/`,
           `1`,
@@ -46,7 +46,7 @@ export class AdvertImageService {
         );
 
         return Api.result<IApiResultUploadFile>({
-          file: fileResult,
+          files: fileResult,
         });
       } else {
         return Api.error({

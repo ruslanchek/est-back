@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { IFileResult } from './upload.service';
+import { IFilesResult } from './upload.service';
 
 export interface IApiResult<Payload> {
   payload: Payload;
@@ -22,7 +22,7 @@ export interface IApiResultList<Entity> {
 }
 
 export interface IApiResultUploadFile {
-  file: IFileResult;
+  files: IFilesResult[];
 }
 
 export interface IApiResultOne<Entity> {

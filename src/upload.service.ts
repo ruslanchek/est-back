@@ -16,9 +16,9 @@ export interface IFileTypes {
   mimeType: string;
 }
 
-export interface IFileResult {
-  path: string;
+export interface IFilesResult {
   name: string;
+  path: string;
 }
 
 export interface IFileMeta {
@@ -78,7 +78,8 @@ export const IMAGE_EXTENSIONS: IFileTypes[] = [
   },
 ];
 
-const JPEG_QUALITY = 90;
+const JPEG_QUALITY: number = 90;
+const BUCKET_URL: string = 'https://content-realthub-com.ams3.digitaloceanspaces.com/';
 
 @Injectable()
 export class UploadService {
@@ -123,8 +124,8 @@ export class UploadService {
     });
   }
 
-  private async makeResizeCopy(file: IFile, fileInfo, size: IResizeDimension): Promise<Buffer> {
-    const {width, height} = size;
+  private async makeResizeCopy(file: IFile, size: IResizeDimension): Promise<Buffer> {
+    const { width, height } = size;
 
     return sharp(file.buffer)
       .withoutEnlargement()
@@ -137,16 +138,22 @@ export class UploadService {
       .toBuffer();
   }
 
-  private async getFileInfo(file: IFile): Promise<Buffer> {
+  private getFileInfo(file: IFile): any {
     return sharp(file.buffer)
       .metadata();
   }
 
-  private async uploadResizeCopies(file: IFile, location: string, fileName: string, resizeDimensions: IResizeDimension[], meta: IFileMeta) {
-    const fileInfo = await this.getFileInfo(file);
+  private async uploadResizeCopies(
+    file: IFile,
+    location: string,
+    fileName: string,
+    resizeDimensions: IResizeDimension[],
+    meta: IFileMeta,
+  ): Promise<IFilesResult[]> {
+    const filesResult: IFilesResult[] = [];
 
     for (const resizeDimension of resizeDimensions) {
-      const resize: Buffer = await this.makeResizeCopy(file, fileInfo, resizeDimension);
+      const resize: Buffer = await this.makeResizeCopy(file, resizeDimension);
       const path: string = Utils.removeDoubleSlashes(`${location}/${resizeDimension.name}/${fileName}.jpg`);
 
       await this.putObject({
@@ -158,8 +165,15 @@ export class UploadService {
         Metadata: meta,
       });
 
+      filesResult.push({
+        name: resizeDimension.name,
+        path: Utils.removeDoubleSlashes(`${BUCKET_URL}/${path}`),
+      });
+
       console.log('uploaded:', resizeDimension.name);
     }
+
+    return filesResult;
   }
 
   private async checkFile(file: IFile, maxSize: number): Promise<boolean | string> {
@@ -183,10 +197,10 @@ export class UploadService {
     maxSize: number,
     meta: IFileMeta,
     resizeDimensions: IResizeDimension[],
-  ): Promise<any> {
+  ): Promise<IFilesResult[]> {
     try {
       await this.checkFile(file, maxSize);
-      await this.uploadResizeCopies(file, location, fileName, resizeDimensions, meta);
+      return await this.uploadResizeCopies(file, location, fileName, resizeDimensions, meta);
 
     } catch (e) {
       console.log(e);
