@@ -25,6 +25,7 @@ export interface IFileMeta {
   entityId: string;
   entityType: string;
   entityKind: string;
+  imageId: string;
 }
 
 interface IResizeDimension {
@@ -95,7 +96,7 @@ export class UploadService {
     });
   }
 
-  checkFileType(file: IFile): boolean {
+  private checkFileType(file: IFile): boolean {
     let result: boolean = false;
     const ext: string = this.extractExtension(file.originalname);
 
@@ -167,7 +168,7 @@ export class UploadService {
 
       filesResult.push({
         name: resizeDimension.name,
-        path: Utils.removeDoubleSlashes(`${BUCKET_URL}/${path}`),
+        path,
       });
 
       console.log('uploaded:', resizeDimension.name);
@@ -188,6 +189,10 @@ export class UploadService {
 
       return resolve(true);
     });
+  }
+
+  public getFullUrl(filePath: string): string {
+    return Utils.removeDoubleSlashes(`${BUCKET_URL}${filePath}`);
   }
 
   public async uploadImage(

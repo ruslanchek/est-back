@@ -1,14 +1,35 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable, JoinColumn } from 'typeorm';
-
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Advert } from '../advert/advert.entity';
+import { Agent } from '../agent/agent.entity';
 
 @Entity()
 export class AdvertImage {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    default: '',
+  })
   title: string;
 
-  @Column()
+  @Column({
+    default: 0,
+  })
   order: number;
+
+  @Column({
+    default: '',
+  })
+  thumb: string;
+
+  @Column({
+    default: '',
+  })
+  big: string;
+
+  @ManyToOne(type => Advert, author => author.images)
+  advert: Advert;
+
+  @ManyToOne(type => Agent)
+  agent: Agent;
 }

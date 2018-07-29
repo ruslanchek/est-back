@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinTable, JoinColumn, OneToMany, ManyToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Agent } from '../agent/agent.entity';
 import { AdvertImage } from '../advert-image/advert-image.entity';
 
@@ -31,7 +31,6 @@ export class Advert {
   @ManyToOne(type => Agent, agent => agent.adverts)
   agent: Agent;
 
-  @ManyToOne(type => AdvertImage)
-  @JoinColumn()
+  @OneToMany(type => AdvertImage, photo => photo)
   images: AdvertImage[];
 }
