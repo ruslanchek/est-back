@@ -144,6 +144,7 @@ export class UploadService {
       .metadata();
   }
 
+  // TODO: Remove EXIF etc...
   private async uploadResizeCopies(
     file: IFile,
     location: string,

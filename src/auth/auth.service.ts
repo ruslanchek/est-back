@@ -21,14 +21,18 @@ export class AuthService {
   }
 
   async createToken(payload: IJwtPayload): Promise<ITokenPayload> {
-    const accessToken = jwt.sign(payload, AUTH_POLICY.SECRET_KEY, {
-      expiresIn: AUTH_POLICY.EXPIRES_IN,
-    });
+    if (payload && payload.id > 0) {
+      const accessToken = jwt.sign(payload, AUTH_POLICY.SECRET_KEY, {
+        expiresIn: AUTH_POLICY.EXPIRES_IN,
+      });
 
-    return {
-      expiresIn: AUTH_POLICY.EXPIRES_IN,
-      accessToken,
-    };
+      return {
+        expiresIn: AUTH_POLICY.EXPIRES_IN,
+        accessToken,
+      };
+    } else {
+      return null;
+    }
   }
 
   async validateUser(payload: IJwtPayload): Promise<Agent> {
@@ -39,6 +43,8 @@ export class AuthService {
     try {
       const entity = await this.findOneByEmail(dto.email);
 
+      console.log(entity);
+
       if (entity) {
         const passwordChecked: boolean = await bcrypt.compare(dto.password, entity.password);
 
@@ -47,7 +53,14 @@ export class AuthService {
             id: entity.id,
           });
 
-          return Api.result<ITokenPayload>(tokenPayload);
+          if (tokenPayload) {
+            return Api.result<ITokenPayload>(tokenPayload);
+          } else {
+            return Api.error({
+              status: HttpStatus.BAD_REQUEST,
+              code: 'BAD_REQUEST',
+            });
+          }
         } else {
           return Api.error({
             status: HttpStatus.UNAUTHORIZED,
@@ -71,6 +84,7 @@ export class AuthService {
         email,
       }, {
         select: [
+          'id',
           'password',
         ],
       });

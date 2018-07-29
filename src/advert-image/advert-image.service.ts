@@ -30,6 +30,8 @@ export class AdvertImageService {
           relations: ['agent'],
         });
 
+      console.log(agentId, advertId, file);
+
       if (findResult) {
         const newEntity: Partial<AdvertImage> = {
           order: 0,
@@ -37,29 +39,44 @@ export class AdvertImageService {
           advert: { id: advertId } as Advert,
           agent: { id: agentId } as Agent,
         };
-        await this.advertImageServiceRepository.insert(newEntity);
-        const imageId: string = uniqid();
-        const fileResult: IFilesResult[] = await this.uploadService.uploadImage(
-          file,
-          `adverts/${agentId}/${advertId}/`,
-          imageId,
-          MAX_UPLOAD_SIZE.OBJECT_PICTURE,
-          {
-            entityId: advertId.toString(),
-            entityKind: 'advertImage',
-            entityType: 'id',
-            imageId,
-          },
-          [
-            UPLOAD_IMAGE_RESIZE_DIMENSIONS.IMAGE,
-            UPLOAD_IMAGE_RESIZE_DIMENSIONS.IMAGE_THUMB,
-          ],
-        );
 
-        if (fileResult) {
-          return Api.result<IApiResultUploadFile>({
-            files: fileResult,
+        const imageInsertResult: InsertResult = await this.advertImageServiceRepository.insert(newEntity);
+
+        if (imageInsertResult && imageInsertResult.identifiers) {
+          const imageId: number = imageInsertResult.identifiers[0].id;
+          const imageUniqId: string = uniqid();
+          const fileResult: IFilesResult[] = await this.uploadService.uploadImage(
+            file,
+            `adverts/${agentId}/${advertId}/`,
+            imageUniqId,
+            MAX_UPLOAD_SIZE.OBJECT_PICTURE,
+            {
+              entityId: advertId.toString(),
+              entityKind: 'advertImage',
+              entityType: 'id',
+              imageId: imageId.toString(),
+            },
+            [
+              UPLOAD_IMAGE_RESIZE_DIMENSIONS.IMAGE,
+              UPLOAD_IMAGE_RESIZE_DIMENSIONS.IMAGE_THUMB,
+            ],
+          );
+
+          await this.advertImageServiceRepository.update({ id: imageId }, {
+            big: fileResult.find(f => f.name === 'big').path,
+            thumb: fileResult.find(f => f.name === 'thumb').path,
           });
+
+          if (fileResult) {
+            return Api.result<IApiResultUploadFile>({
+              files: fileResult,
+            });
+          } else {
+            return Api.error({
+              status: HttpStatus.BAD_REQUEST,
+              code: 'UPLOAD_ERROR',
+            });
+          }
         } else {
           return Api.error({
             status: HttpStatus.BAD_REQUEST,

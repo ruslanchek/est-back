@@ -17,7 +17,7 @@ export class AdvertService {
   public async findOne(id: number): Promise<IApiResult<IApiResultOne<Advert>>> {
     try {
       const entity: Advert = await this.advertServiceRepository.findOne(id, {
-        relations: ['agent'],
+        relations: ['agent', 'images'],
       });
 
       if (entity) {
@@ -38,7 +38,7 @@ export class AdvertService {
   public async findAll(): Promise<IApiResult<IApiResultList<Advert>>> {
     try {
       const list: Advert[] = await this.advertServiceRepository.find({
-        relations: ['agent'],
+        relations: ['agent', 'images'],
       });
 
       return Api.result<IApiResultList<Advert>>({
