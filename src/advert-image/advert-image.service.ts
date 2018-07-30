@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InsertResult, Repository } from 'typeorm';
+import { DeleteResult, InsertResult, Repository } from 'typeorm';
 import { AdvertImage } from './advert-image.entity';
 import { Advert } from '../advert/advert.entity';
-import { IFile, IFilesResult, MAX_UPLOAD_SIZE, UPLOAD_IMAGE_RESIZE_DIMENSIONS, UploadService } from '../upload.service';
-import { Api, IApiResult, IApiResultUploadFile } from '../api';
+import { IFile, IFileDeleteResult, IFileResult, MAX_UPLOAD_SIZE, UPLOAD_IMAGE_RESIZE_DIMENSIONS, UploadService } from '../upload.service';
+import { Api, IApiResult, IApiResultDeleteFile, IApiResultUploadFile } from '../api';
 import * as uniqid from 'uniqid';
 import { Agent } from '../agent/agent.entity';
 
@@ -20,6 +20,36 @@ export class AdvertImageService {
 
   }
 
+  public async delete(agentId: number, advertId: number, imageId: number): Promise<IApiResult<IApiResultDeleteFile>> {
+    const imagesResult: AdvertImage = await this.advertImageServiceRepository.findOne({
+      id: imageId,
+      advert: { id: advertId },
+      agent: { id: agentId },
+    });
+
+    if (imagesResult) {
+      const filesDeleteResult: IFileDeleteResult[] = await this.uploadService.deleteImage([
+        imagesResult.thumb,
+        imagesResult.big,
+      ]);
+
+      await this.advertImageServiceRepository.delete({
+        id: imageId,
+        advert: { id: advertId },
+        agent: { id: agentId },
+      });
+
+      return Api.result<IApiResultDeleteFile>({
+        files: filesDeleteResult,
+      });
+    } else {
+      return Api.error({
+        status: HttpStatus.BAD_REQUEST,
+        code: 'BAD_REQUEST',
+      });
+    }
+  }
+
   public async upload(agentId: number, advertId: number, file: IFile): Promise<IApiResult<IApiResultUploadFile>> {
     try {
       const findResult: Advert = await this.advertServiceRepository.findOne({
@@ -29,8 +59,6 @@ export class AdvertImageService {
         {
           relations: ['agent'],
         });
-
-      console.log(agentId, advertId, file);
 
       if (findResult) {
         const newEntity: Partial<AdvertImage> = {
@@ -45,7 +73,7 @@ export class AdvertImageService {
         if (imageInsertResult && imageInsertResult.identifiers) {
           const imageId: number = imageInsertResult.identifiers[0].id;
           const imageUniqId: string = uniqid();
-          const fileResult: IFilesResult[] = await this.uploadService.uploadImage(
+          const fileResult: IFileResult[] = await this.uploadService.uploadImage(
             file,
             `adverts/${agentId}/${advertId}/`,
             imageUniqId,
@@ -62,12 +90,12 @@ export class AdvertImageService {
             ],
           );
 
-          await this.advertImageServiceRepository.update({ id: imageId }, {
-            big: fileResult.find(f => f.name === 'big').path,
-            thumb: fileResult.find(f => f.name === 'thumb').path,
-          });
-
           if (fileResult) {
+            await this.advertImageServiceRepository.update({ id: imageId }, {
+              big: fileResult.find(f => f.name === 'big').path,
+              thumb: fileResult.find(f => f.name === 'thumb').path,
+            });
+
             return Api.result<IApiResultUploadFile>({
               files: fileResult,
             });

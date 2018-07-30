@@ -1,4 +1,4 @@
-import { Controller, FileInterceptor, Get, Param, Post, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, FileInterceptor, Get, Param, Post, Request, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AdvertImageService } from './advert-image.service';
 import { AuthGuard } from '@nestjs/passport';
 import { IFile } from '../upload.service';
@@ -11,7 +11,7 @@ export class AdvertImageController {
   @Post('/:objectId')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file'))
-  async updateAvatar(
+  async upload(
     @Request() req,
     @Param() params,
     @UploadedFile() file: IFile,
@@ -19,5 +19,16 @@ export class AdvertImageController {
     const { user } = req;
 
     return await this.advertImageService.upload(user.id, params.objectId, file);
+  }
+
+  @Delete('/:objectId/:imageId')
+  @UseGuards(AuthGuard('jwt'))
+  async delete(
+    @Request() req,
+    @Param() params,
+  ) {
+    const { user } = req;
+
+    return await this.advertImageService.delete(user.id, params.objectId, params.imageId);
   }
 }

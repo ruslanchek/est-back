@@ -16,8 +16,12 @@ export interface IFileTypes {
   mimeType: string;
 }
 
-export interface IFilesResult {
+export interface IFileResult {
   name: string;
+  path: string;
+}
+
+export interface IFileDeleteResult {
   path: string;
 }
 
@@ -113,9 +117,23 @@ export class UploadService {
     return filename.split('.').pop();
   }
 
+  // TODO: Types
   private putObject(params): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       this.s3.putObject(params, (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+
+  // TODO: Types
+  private deleteObject(params): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      this.s3.deleteObject(params, (err, data) => {
         if (err) {
           reject(err);
         } else {
@@ -151,14 +169,14 @@ export class UploadService {
     fileName: string,
     resizeDimensions: IResizeDimension[],
     meta: IFileMeta,
-  ): Promise<IFilesResult[]> {
-    const filesResult: IFilesResult[] = [];
+  ): Promise<IFileResult[]> {
+    const filesResult: IFileResult[] = [];
 
     for (const resizeDimension of resizeDimensions) {
       const resize: Buffer = await this.makeResizeCopy(file, resizeDimension);
       const path: string = Utils.removeDoubleSlashes(`${location}/${resizeDimension.name}/${fileName}.jpg`);
 
-      await this.putObject({
+      const putResult = await this.putObject({
         Body: resize,
         ACL: 'public-read',
         Bucket: process.env.S3_BUCKET,
@@ -200,6 +218,27 @@ export class UploadService {
     return Utils.removeDoubleSlashes(`${BUCKET_URL}${filePath}`);
   }
 
+  public async deleteImage(files: string[]): Promise<IFileDeleteResult[]> {
+    const result: IFileDeleteResult[] = [];
+
+    for (const file of files) {
+      if (file) {
+        const deleteResult = await this.deleteObject({
+          Bucket: process.env.S3_BUCKET,
+          Key: file,
+        });
+
+        if (deleteResult) {
+          result.push({
+            path: file,
+          });
+        }
+      }
+    }
+
+    return result;
+  }
+
   public async uploadImage(
     file: IFile,
     location: string,
@@ -207,7 +246,7 @@ export class UploadService {
     maxSize: number,
     meta: IFileMeta,
     resizeDimensions: IResizeDimension[],
-  ): Promise<IFilesResult[]> {
+  ): Promise<IFileResult[]> {
     try {
       await this.checkFile(file, maxSize);
       return await this.uploadResizeCopies(file, location, fileName, resizeDimensions, meta);
