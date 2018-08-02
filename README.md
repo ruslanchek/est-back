@@ -85,6 +85,8 @@ server {
     server_name realthub.com;
     ssl_certificate /etc/nginx/ssl/realthub.crt;
     ssl_certificate_key /etc/nginx/ssl/realthub.key;
+    
+    rewrite ^/(.*)/$ /$1 permanent;
 
     location / {
         root /home/realthub/apps/web/dist;
