@@ -1,13 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
-import { Api, IApiResult, IApiResultOne, IApiResultUploadFile } from '../api';
+import { Api, IApiResult, IApiResultList, IApiResultOne, IApiResultUploadFile } from '../api';
 import { Agent } from '../agent/agent.entity';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
 import * as bcrypt from 'bcrypt';
 import { MailingService } from '../mailing.service';
 import { IFile, IFileResult, MAX_UPLOAD_SIZE, UPLOAD_IMAGE_RESIZE_DIMENSIONS, UploadService } from '../upload.service';
 import * as uniqid from 'uniqid';
+import { Advert } from '../advert/advert.entity';
 
 const PERSONAL_ENTITY_SELECT_FIELDS: FindOneOptions<Agent> = {
   select: [
@@ -26,15 +27,17 @@ export class ProfileService {
   constructor(
     @InjectRepository(Agent)
     private readonly agentServiceRepository: Repository<Agent>,
+    @InjectRepository(Advert)
+    private readonly advertServiceRepository: Repository<Advert>,
     private readonly mailingService: MailingService,
     private readonly uploadService: UploadService,
   ) {
   }
 
-  public async getProfile(id: number): Promise<IApiResult<IApiResultOne<Agent>>> {
+  public async getProfile(agentId: number): Promise<IApiResult<IApiResultOne<Agent>>> {
     try {
       const entity: Agent = await this.agentServiceRepository.findOne(
-        { id },
+        { id: agentId },
         PERSONAL_ENTITY_SELECT_FIELDS,
       );
 
@@ -43,23 +46,44 @@ export class ProfileService {
           entity,
         });
       } else {
-        throw new HttpException(null, HttpStatus.NOT_FOUND);
+        return Api.error({
+          status: HttpStatus.NOT_FOUND,
+          code: 'NOT_FOUND',
+        });
       }
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  public async update(id: number, dto: UpdateProfileDto): Promise<IApiResult<IApiResultOne<Agent>>> {
+  public async getAdverts(agentId: number): Promise<IApiResult<IApiResultList<Advert>>> {
     try {
-      const findResult: Agent = await this.agentServiceRepository.findOne(id);
+      const list: Advert[] = await this.advertServiceRepository.find({
+        agent: {
+          id: agentId,
+        },
+      });
+
+      return Api.result<IApiResultList<Advert>>({
+        list,
+      });
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  public async update(agentId: number, dto: UpdateProfileDto): Promise<IApiResult<IApiResultOne<Agent>>> {
+    try {
+      const findResult: Agent = await this.agentServiceRepository.findOne(agentId);
 
       if (findResult) {
         await this.agentServiceRepository.update(
-          { id },
+          {
+            id: agentId,
+          },
           dto,
         );
-        const entity: Agent = await this.agentServiceRepository.findOne(id);
+        const entity: Agent = await this.agentServiceRepository.findOne(agentId);
 
         return Api.result<IApiResultOne<Agent>>({
           entity,

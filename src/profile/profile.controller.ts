@@ -12,13 +12,14 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Api, IApiResult, IApiResultOne } from '../api';
+import { Api, IApiResult, IApiResultList, IApiResultOne } from '../api';
 import { ValidationPipe } from '../validation.pipe';
 import { Agent } from '../agent/agent.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto, UpdateProfilePasswordDto } from './profile.dto';
 import { IFile } from '../upload.service';
+import { Advert } from '../advert/advert.entity';
 
 @Controller('/api/profile')
 export class ProfileController {
@@ -29,10 +30,18 @@ export class ProfileController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  async getUser(@Request() req): Promise<IApiResult<IApiResultOne<Agent>>> {
+  async getProfile(@Request() req): Promise<IApiResult<IApiResultOne<Agent>>> {
     const { user } = req;
 
     return await this.profileService.getProfile(user.id);
+  }
+
+  @Get('adverts')
+  @UseGuards(AuthGuard('jwt'))
+  async adverts(@Request() req): Promise<IApiResult<IApiResultList<Advert>>> {
+    const { user } = req;
+
+    return await this.profileService.getAdverts(user.id);
   }
 
   @Patch('update')

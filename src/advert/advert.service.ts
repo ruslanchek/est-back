@@ -14,10 +14,22 @@ export class AdvertService {
   ) {
   }
 
-  public async findOne(id: number): Promise<IApiResult<IApiResultOne<Advert>>> {
+  public async findOne(id: any): Promise<IApiResult<IApiResultOne<Advert>>> {
     try {
-      const entity: Advert = await this.advertServiceRepository.findOne(id, {
-        relations: ['agent', 'images'],
+      const parsedId: number = parseInt(id, 10);
+
+      if (isNaN(parsedId) || parsedId <= 1) {
+        return Api.error({
+          status: HttpStatus.BAD_REQUEST,
+          code: 'BAD_REQUEST',
+        });
+      }
+
+      const entity: Advert = await this.advertServiceRepository.findOne(parsedId, {
+        relations: [
+          'agent',
+          'images',
+        ],
       });
 
       if (entity) {

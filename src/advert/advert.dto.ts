@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsDate, IsEnum, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { EAdvertContractType, EAdvertType } from './advert.enum';
 import { Agent } from '../agent/agent.entity';
 
