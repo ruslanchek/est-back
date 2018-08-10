@@ -59,8 +59,14 @@ export class ProfileService {
   public async getAdverts(agentId: number): Promise<IApiResult<IApiResultList<Advert>>> {
     try {
       const list: Advert[] = await this.advertServiceRepository.find({
-        agent: {
-          id: agentId,
+        where: {
+          agent: {
+            id: agentId,
+          },
+        },
+
+        order: {
+          id: 'DESC',
         },
       });
 
