@@ -49,11 +49,13 @@ export const UPLOAD_IMAGE_RESIZE_DIMENSIONS = {
     width: 256,
     height: 256,
   },
+
   IMAGE: {
     name: 'big',
     width: 1920,
     height: 1080,
   },
+
   IMAGE_THUMB: {
     name: 'thumb',
     width: 512,
@@ -83,7 +85,8 @@ export const IMAGE_EXTENSIONS: IFileTypes[] = [
   },
 ];
 
-const JPEG_QUALITY: number = 90;
+const JPEG_QUALITY: number = 86;
+const WEBP_QUALITY: number = 86;
 const BUCKET_URL: string = 'https://content-realthub-com.ams3.digitaloceanspaces.com/';
 
 @Injectable()
@@ -143,18 +146,38 @@ export class UploadService {
     });
   }
 
-  private async makeResizeCopy(file: IFile, size: IResizeDimension): Promise<Buffer> {
+  private async makeResizeCopy(file: IFile, size: IResizeDimension, type: 'webp' | 'jpg'): Promise<Buffer> {
     const { width, height } = size;
 
-    return sharp(file.buffer)
-      .withoutEnlargement()
-      .max()
-      .rotate()
-      .resize(width, height)
-      .jpeg({
-        quality: JPEG_QUALITY,
-      })
-      .toBuffer();
+    switch(type) {
+      case 'webp' : {
+        return sharp(file.buffer)
+          .withoutEnlargement()
+          .max()
+          .rotate()
+          .resize(width, height)
+          .webp({
+            quality: WEBP_QUALITY,
+            alphaQuality: WEBP_QUALITY,
+            lossless: false,
+            nearLossless: false,
+            force: true,
+          })
+          .toBuffer();
+      }
+
+      case 'jpg' : {
+        return sharp(file.buffer)
+          .withoutEnlargement()
+          .max()
+          .rotate()
+          .resize(width, height)
+          .jpeg({
+            quality: JPEG_QUALITY,
+          })
+          .toBuffer();
+      }
+    }
   }
 
   private getFileInfo(file: IFile): any {
@@ -173,15 +196,25 @@ export class UploadService {
     const filesResult: IFileResult[] = [];
 
     for (const resizeDimension of resizeDimensions) {
-      const resize: Buffer = await this.makeResizeCopy(file, resizeDimension);
-      const path: string = Utils.removeDoubleSlashes(`${location}/${resizeDimension.name}/${fileName}.jpg`);
+      const resizeJpg: Buffer = await this.makeResizeCopy(file, resizeDimension, 'jpg');
+      const resizeWebp: Buffer = await this.makeResizeCopy(file, resizeDimension, 'webp');
+      const path: string = Utils.removeDoubleSlashes(`${location}/${resizeDimension.name}/${fileName}`);
 
-      const putResult = await this.putObject({
-        Body: resize,
+      await this.putObject({
+        Body: resizeJpg,
         ACL: 'public-read',
         Bucket: process.env.S3_BUCKET,
-        Key: path,
+        Key: `${path}.jpg`,
         ContentType: 'image/jpeg',
+        Metadata: meta,
+      });
+
+      await this.putObject({
+        Body: resizeWebp,
+        ACL: 'public-read',
+        Bucket: process.env.S3_BUCKET,
+        Key: `${path}.webp`,
+        ContentType: 'image/webp',
         Metadata: meta,
       });
 
@@ -252,6 +285,8 @@ export class UploadService {
       return await this.uploadResizeCopies(file, location, fileName, resizeDimensions, meta);
 
     } catch (e) {
+      console.log(e);
+      
       return null;
     }
   }

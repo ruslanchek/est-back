@@ -29,8 +29,10 @@ export class AdvertImageService {
 
     if (imagesResult) {
       const filesDeleteResult: IFileDeleteResult[] = await this.uploadService.deleteImage([
-        imagesResult.thumb,
-        imagesResult.big,
+        `${imagesResult.thumb}.jpg`,
+        `${imagesResult.big}.jpg`,
+        `${imagesResult.thumb}.webp`,
+        `${imagesResult.big}.webp`,
       ]);
 
       await this.advertImageServiceRepository.delete({
