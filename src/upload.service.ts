@@ -85,8 +85,8 @@ export const IMAGE_EXTENSIONS: IFileTypes[] = [
   },
 ];
 
-const JPEG_QUALITY: number = 86;
-const WEBP_QUALITY: number = 86;
+const JPEG_QUALITY: number = 85;
+const WEBP_QUALITY: number = 85;
 const BUCKET_URL: string = 'https://content-realthub-com.ams3.digitaloceanspaces.com/';
 
 @Injectable()
@@ -117,7 +117,7 @@ export class UploadService {
   }
 
   private extractExtension(filename: string): string {
-    return filename.split('.').pop();
+    return filename.split('.').pop().toLowerCase();
   }
 
   // TODO: Types
@@ -149,7 +149,7 @@ export class UploadService {
   private async makeResizeCopy(file: IFile, size: IResizeDimension, type: 'webp' | 'jpg'): Promise<Buffer> {
     const { width, height } = size;
 
-    switch(type) {
+    switch (type) {
       case 'webp' : {
         return sharp(file.buffer)
           .withoutEnlargement()
@@ -286,7 +286,7 @@ export class UploadService {
 
     } catch (e) {
       console.log(e);
-      
+
       return null;
     }
   }
