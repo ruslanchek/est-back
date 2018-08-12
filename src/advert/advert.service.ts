@@ -25,7 +25,10 @@ export class AdvertService {
         });
       }
 
-      const entity: Advert = await this.advertServiceRepository.findOne(parsedId, {
+      const entity: Advert = await this.advertServiceRepository.findOne({
+        id: parsedId,
+        published: true,
+      }, {
         relations: [
           'agent',
           'images',
@@ -50,6 +53,9 @@ export class AdvertService {
   public async findAll(): Promise<IApiResult<IApiResultList<Advert>>> {
     try {
       const list: Advert[] = await this.advertServiceRepository.find({
+        where: {
+          published: true,
+        },
         relations: ['agent', 'images'],
       });
 

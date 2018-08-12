@@ -10,6 +10,12 @@ export class Advert {
   @Column()
   title: string;
 
+  @Column({
+    default: false,
+    select: false,
+  })
+  published: boolean;
+
   @Column()
   type: string;
 
