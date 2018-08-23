@@ -18,7 +18,7 @@ export class AdvertService {
     try {
       const parsedId: number = parseInt(id, 10);
 
-      if (isNaN(parsedId) || parsedId <= 1) {
+      if (isNaN(parsedId) || parsedId < 1) {
         return Api.error({
           status: HttpStatus.BAD_REQUEST,
           code: 'BAD_REQUEST',
