@@ -27,7 +27,7 @@ export class AdvertImage {
   })
   big: string;
 
-  @ManyToOne(type => Advert, author => author.images)
+  @ManyToOne(type => Advert, advert => advert.images)
   advert: Advert;
 
   @ManyToOne(type => Agent)
