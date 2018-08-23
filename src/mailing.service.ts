@@ -69,7 +69,7 @@ export class MailingService {
       buttonText: data.buttonText,
       post: 'If you received this email by mistake, simply delete it. You won\'t be subscribed if you don\'t click the confirmation link above.',
       buttonUrl: 'https://realthub.com',
-      copyright: `Copyright © 2014–${new Date().getFullYear()} Realthub Ltd. All rights reserved.`,
+      copyright: `Copyright © 2017–${new Date().getFullYear()} Realthub Ltd. All rights reserved.`,
       nav: [
         { title: 'Contacts', url: 'https://realthub.com/about/contacts?from=email' },
         { title: 'Advertise', url: 'https://realthub.com/about/advertise?from=email' },
