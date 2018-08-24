@@ -151,6 +151,7 @@ export class ProfileService {
     try {
       const imageId: string = uniqid();
       const fileResult: IFileResult[] = await this.uploadService.uploadImage(
+        id,
         file,
         `agents/${id}/`,
         imageId,
