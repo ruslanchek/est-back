@@ -41,18 +41,14 @@ export class Api {
     };
   }
 
-  static error(error: IApiResultError): IApiResult<any> {
-    return {
+  static error(error: IApiResultError) {
+    throw new HttpException({
       payload: null,
-      error,
-    };
-  }
-
-  static unhandled(e, dto?: any): IApiResult<any> {
-    if (dto && dto.error) {
-      return dto;
-    } else {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+      error: {
+        code: error.code,
+        fields: error.fields,
+        details: error.details,
+      }
+    }, error.status);
   }
 }
