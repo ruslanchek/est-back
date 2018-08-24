@@ -1,6 +1,6 @@
 version: "2"
 services:
-  electron_server:
+  realthub:
     image: node:8
     ports:
     - 5500:5500

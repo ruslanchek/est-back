@@ -176,3 +176,9 @@ psql
 ALTER USER realthub PASSWORD '******';
 ```
 
+# Docker
+
+```
+docker-compose up --build
+docker-compose up -d
+```
