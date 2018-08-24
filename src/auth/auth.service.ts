@@ -42,29 +42,19 @@ export class AuthService {
   async login(dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
     try {
       const entity = await this.findOneByEmail(dto.email);
+      const passwordChecked: boolean = await bcrypt.compare(dto.password, entity.password);
 
-      console.log(entity);
+      if (passwordChecked) {
+        const tokenPayload: ITokenPayload = await this.createToken({
+          id: entity.id,
+        });
 
-      if (entity) {
-        const passwordChecked: boolean = await bcrypt.compare(dto.password, entity.password);
-
-        if (passwordChecked) {
-          const tokenPayload: ITokenPayload = await this.createToken({
-            id: entity.id,
-          });
-
-          if (tokenPayload) {
-            return Api.result<ITokenPayload>(tokenPayload);
-          } else {
-            return Api.error({
-              status: HttpStatus.BAD_REQUEST,
-              code: 'BAD_REQUEST',
-            });
-          }
+        if (tokenPayload) {
+          return Api.result<ITokenPayload>(tokenPayload);
         } else {
           return Api.error({
-            status: HttpStatus.UNAUTHORIZED,
-            code: 'WRONG_CREDENTIALS',
+            status: HttpStatus.BAD_REQUEST,
+            code: 'BAD_REQUEST',
           });
         }
       } else {
@@ -74,22 +64,7 @@ export class AuthService {
         });
       }
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  async findOneByEmail(email: string): Promise<Agent> {
-    try {
-      return await this.agentServiceRepository.findOne({
-        email,
-      }, {
-        select: [
-          'id',
-          'password',
-        ],
-      });
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, dto);
     }
   }
 
@@ -103,29 +78,37 @@ export class AuthService {
           code: 'CONFLICT',
         });
       } else {
-        if (dto.email && dto.password) {
-          const verificationCode: string = await bcrypt.hash(dto.email, 5);
-          const name = dto.email.match(/^([^@]*)@/)[1];
-          const entityNew = await this.insert(Object.assign(dto, { name }));
-          const tokenPayload = await this.createToken({
-            id: entityNew.id,
-          });
+        const verificationCode: string = await bcrypt.hash(dto.email, 5);
+        const name = dto.email.match(/^([^@]*)@/)[1];
+        const entityNew = await this.insert(Object.assign(dto, { name }));
+        const tokenPayload = await this.createToken({
+          id: entityNew.id,
+        });
 
-          await this.mailingService.sendWelcome({
-            agentName: name,
-            agentEmail: dto.email,
-            agentId: entityNew.id,
-            verificationCode,
-          });
+        await this.mailingService.sendWelcome({
+          agentName: name,
+          agentEmail: dto.email,
+          agentId: entityNew.id,
+          verificationCode,
+        });
 
-          return Api.result<ITokenPayload>(tokenPayload);
-        } else {
-          return Api.error({
-            status: HttpStatus.BAD_REQUEST,
-            code: 'BAD_REQUEST',
-          });
-        }
+        return Api.result<ITokenPayload>(tokenPayload);
       }
+    } catch (e) {
+      return Api.unhandled(e, dto);
+    }
+  }
+
+  private async findOneByEmail(email: string): Promise<Agent> {
+    try {
+      return await this.agentServiceRepository.findOne({
+        email,
+      }, {
+        select: [
+          'id',
+          'password',
+        ],
+      });
     } catch (e) {
       throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -20,7 +20,7 @@ export class AgentService {
         list,
       });
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, null);
     }
   }
 
@@ -39,7 +39,7 @@ export class AgentService {
         });
       }
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, null);
     }
   }
 }

@@ -10,7 +10,7 @@ import {
   Post,
   Request, UploadedFile,
   UseGuards,
-  UseInterceptors,
+  UseInterceptors, UsePipes,
 } from '@nestjs/common';
 import { Api, IApiResult, IApiResultList, IApiResultOne } from '../api';
 import { ValidationPipe } from '../validation.pipe';
@@ -46,21 +46,20 @@ export class ProfileController {
 
   @Patch('update')
   @UseGuards(AuthGuard('jwt'))
-  async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateProfileDto): Promise<IApiResult<IApiResultOne<Agent>>> {
+  @UsePipes(new ValidationPipe())
+  async update(@Request() req, @Body() dto: UpdateProfileDto): Promise<IApiResult<IApiResultOne<Agent>>> {
     const { user } = req;
-
     return await this.profileService.update(user.id, dto);
   }
 
   @Patch('update-password')
   @UseGuards(AuthGuard('jwt'))
+  @UsePipes(new ValidationPipe())
   async passwordChange(
     @Request() req,
-    @Param() params,
-    @Body(new ValidationPipe()) dto: UpdateProfilePasswordDto,
+    @Body() dto: UpdateProfilePasswordDto,
   ): Promise<IApiResult<IApiResultOne<Agent>>> {
     const { user } = req;
-
     return await this.profileService.updatePassword(user.id, dto);
   }
 
@@ -72,7 +71,6 @@ export class ProfileController {
     @UploadedFile() file: IFile,
   ) {
     const { user } = req;
-
     return await this.profileService.updateAvatar(user.id, file);
   }
 }

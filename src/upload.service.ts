@@ -17,6 +17,7 @@ export interface IFileTypes {
 }
 
 export interface IFileResult {
+  id: number;
   name: string;
   path: string;
 }
@@ -187,6 +188,7 @@ export class UploadService {
 
   // TODO: Remove EXIF etc...
   private async uploadResizeCopies(
+    id: number,
     file: IFile,
     location: string,
     fileName: string,
@@ -219,6 +221,7 @@ export class UploadService {
       });
 
       filesResult.push({
+        id,
         name: resizeDimension.name,
         path,
       });
@@ -273,6 +276,7 @@ export class UploadService {
   }
 
   public async uploadImage(
+    id: number,
     file: IFile,
     location: string,
     fileName: string,
@@ -282,7 +286,7 @@ export class UploadService {
   ): Promise<IFileResult[]> {
     try {
       await this.checkFile(file, maxSize);
-      return await this.uploadResizeCopies(file, location, fileName, resizeDimensions, meta);
+      return await this.uploadResizeCopies(id, file, location, fileName, resizeDimensions, meta);
 
     } catch (e) {
       console.log(e);

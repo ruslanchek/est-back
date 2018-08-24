@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Patch, Post, Body, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Post, Body, Request, UseGuards, UsePipes } from '@nestjs/common';
 import { AdvertService } from './advert.service';
 import { Advert } from './advert.entity';
 import { CreateAdvertDto, UpdateAdvertDto } from './advert.dto';
@@ -23,7 +23,8 @@ export class AdvertController {
 
   @Post()
   @UseGuards(AuthGuard('jwt'))
-  async create(@Request() req, @Body(new ValidationPipe()) dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
+  @UsePipes(new ValidationPipe())
+  async create(@Request() req, @Body() dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
     const { user } = req;
 
     return await this.advertService.insert(user.id, dto);
@@ -31,7 +32,8 @@ export class AdvertController {
 
   @Patch(':id')
   @UseGuards(AuthGuard('jwt'))
-  async update(@Request() req, @Param() params, @Body(new ValidationPipe()) dto: UpdateAdvertDto): Promise<IApiResult<IApiResultOne<Advert>>> {
+  @UsePipes(new ValidationPipe())
+  async update(@Request() req, @Param() params, @Body() dto: UpdateAdvertDto): Promise<IApiResult<IApiResultOne<Advert>>> {
     const { user } = req;
 
     return await this.advertService.update(user.id, params.id, dto);

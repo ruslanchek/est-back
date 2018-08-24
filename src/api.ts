@@ -1,4 +1,4 @@
-import { HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { IFileDeleteResult, IFileResult } from './upload.service';
 
 export interface IApiResult<Payload> {
@@ -9,7 +9,7 @@ export interface IApiResult<Payload> {
 export interface IApiResultError {
   status: HttpStatus;
   code: string;
-  fields?: {[field: string]: string};
+  fields?: { [field: string]: string };
   details?: any;
 }
 
@@ -46,5 +46,13 @@ export class Api {
       payload: null,
       error,
     };
+  }
+
+  static unhandled(e, dto?: any): IApiResult<any> {
+    if (dto && dto.error) {
+      return dto;
+    } else {
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

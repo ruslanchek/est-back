@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post, UsePipes } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ITokenPayload } from './auth.interface';
 import { IApiResult } from '../api';
@@ -11,12 +11,14 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Param() params, @Body(new ValidationPipe()) dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
+  @UsePipes(new ValidationPipe())
+  async login(@Param() params, @Body() dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
     return await this.authService.login(dto);
   }
 
   @Post('register')
-  async register(@Param() params, @Body(new ValidationPipe()) dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
+  @UsePipes(new ValidationPipe())
+  async register(@Param() params, @Body() dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
     return await this.authService.register(dto);
   }
 }

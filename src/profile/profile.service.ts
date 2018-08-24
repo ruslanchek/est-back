@@ -74,7 +74,7 @@ export class ProfileService {
         list,
       });
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, null);
     }
   }
 
@@ -101,7 +101,7 @@ export class ProfileService {
         });
       }
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, dto);
     }
   }
 
@@ -113,44 +113,37 @@ export class ProfileService {
         ],
       });
 
-      if (findResult) {
-        const passwordChecked: boolean = await bcrypt.compare(dto.oldPassword, findResult.password);
+      const passwordChecked: boolean = await bcrypt.compare(dto.oldPassword, findResult.password);
 
-        if (passwordChecked) {
-          const hashedPassword: string = await bcrypt.hash(dto.password, 10);
-          await this.agentServiceRepository.update(
-            { id },
-            { password: hashedPassword },
-          );
-          const entity: Agent = await this.agentServiceRepository.findOne(
-            { id },
-            PERSONAL_ENTITY_SELECT_FIELDS,
-          );
+      if (passwordChecked) {
+        const hashedPassword: string = await bcrypt.hash(dto.password, 10);
+        await this.agentServiceRepository.update(
+          { id },
+          { password: hashedPassword },
+        );
+        const entity: Agent = await this.agentServiceRepository.findOne(
+          { id },
+          PERSONAL_ENTITY_SELECT_FIELDS,
+        );
 
-          await this.mailingService.sendPasswordChanged({
-            agentName: entity.name,
-            agentEmail: entity.email,
-            agentId: entity.id,
-            verificationCode: '',
-          });
+        await this.mailingService.sendPasswordChanged({
+          agentName: entity.name,
+          agentEmail: entity.email,
+          agentId: entity.id,
+          verificationCode: '',
+        });
 
-          return Api.result<IApiResultOne<Agent>>({
-            entity,
-          });
-        } else {
-          return Api.error({
-            status: HttpStatus.BAD_REQUEST,
-            code: 'BAD_REQUEST',
-          });
-        }
+        return Api.result<IApiResultOne<Agent>>({
+          entity,
+        });
       } else {
         return Api.error({
-          status: HttpStatus.NOT_FOUND,
-          code: 'NOT_FOUND',
+          status: HttpStatus.BAD_REQUEST,
+          code: 'WRONG_PASSWORD',
         });
       }
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, dto);
     }
   }
 
@@ -189,7 +182,7 @@ export class ProfileService {
         });
       }
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, null);
     }
   }
 }

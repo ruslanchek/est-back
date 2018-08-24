@@ -46,7 +46,7 @@ export class AdvertService {
         });
       }
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, null);
     }
   }
 
@@ -63,7 +63,7 @@ export class AdvertService {
         list,
       });
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, null);
     }
   }
 
@@ -84,7 +84,7 @@ export class AdvertService {
         });
       }
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, dto);
     }
   }
 
@@ -116,7 +116,7 @@ export class AdvertService {
         });
       }
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, dto);
     }
   }
 }

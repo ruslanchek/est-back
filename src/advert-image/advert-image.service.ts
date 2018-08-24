@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, InsertResult, Repository } from 'typeorm';
+import { InsertResult, Repository } from 'typeorm';
 import { AdvertImage } from './advert-image.entity';
 import { Advert } from '../advert/advert.entity';
 import { IFile, IFileDeleteResult, IFileResult, MAX_UPLOAD_SIZE, UPLOAD_IMAGE_RESIZE_DIMENSIONS, UploadService } from '../upload.service';
@@ -21,13 +21,13 @@ export class AdvertImageService {
   }
 
   public async delete(agentId: number, advertId: number, imageId: number): Promise<IApiResult<IApiResultDeleteFile>> {
-    const imagesResult: AdvertImage = await this.advertImageServiceRepository.findOne({
-      id: imageId,
-      advert: { id: advertId },
-      agent: { id: agentId },
-    });
+    try {
+      const imagesResult: AdvertImage = await this.advertImageServiceRepository.findOne({
+        id: imageId,
+        advert: { id: advertId },
+        agent: { id: agentId },
+      });
 
-    if (imagesResult) {
       const filesDeleteResult: IFileDeleteResult[] = await this.uploadService.deleteImage([
         `${imagesResult.thumb}.jpg`,
         `${imagesResult.big}.jpg`,
@@ -44,11 +44,8 @@ export class AdvertImageService {
       return Api.result<IApiResultDeleteFile>({
         files: filesDeleteResult,
       });
-    } else {
-      return Api.error({
-        status: HttpStatus.BAD_REQUEST,
-        code: 'BAD_REQUEST',
-      });
+    } catch (e) {
+      return Api.unhandled(e, null);
     }
   }
 
@@ -76,6 +73,7 @@ export class AdvertImageService {
           const imageId: number = imageInsertResult.identifiers[0].id;
           const imageUniqId: string = uniqid();
           const fileResult: IFileResult[] = await this.uploadService.uploadImage(
+            imageId,
             file,
             `adverts/${agentId}/${advertId}/`,
             imageUniqId,
@@ -120,7 +118,7 @@ export class AdvertImageService {
         });
       }
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      return Api.unhandled(e, null);
     }
   }
 }
