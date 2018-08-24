@@ -23,6 +23,7 @@ export interface IFileResult {
 }
 
 export interface IFileDeleteResult {
+  id: number;
   path: string;
 }
 
@@ -254,7 +255,7 @@ export class UploadService {
     return Utils.removeDoubleSlashes(`${BUCKET_URL}${filePath}`);
   }
 
-  public async deleteImage(files: string[]): Promise<IFileDeleteResult[]> {
+  public async deleteImage(id: number, files: string[]): Promise<IFileDeleteResult[]> {
     const result: IFileDeleteResult[] = [];
 
     for (const file of files) {
@@ -266,6 +267,7 @@ export class UploadService {
 
         if (deleteResult) {
           result.push({
+            id,
             path: file,
           });
         }

@@ -28,7 +28,7 @@ export class AdvertImageService {
         agent: { id: agentId },
       });
 
-      const filesDeleteResult: IFileDeleteResult[] = await this.uploadService.deleteImage([
+      const filesDeleteResult: IFileDeleteResult[] = await this.uploadService.deleteImage(imageId, [
         `${imagesResult.thumb}.jpg`,
         `${imagesResult.big}.jpg`,
         `${imagesResult.thumb}.webp`,
