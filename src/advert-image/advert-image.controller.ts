@@ -8,7 +8,7 @@ export class AdvertImageController {
   constructor(private readonly advertImageService: AdvertImageService) {
   }
 
-  @Post('/:objectId')
+  @Post('/:projectId')
   @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('file'))
   async upload(
@@ -18,10 +18,10 @@ export class AdvertImageController {
   ) {
     const { user } = req;
 
-    return await this.advertImageService.upload(user.id, params.objectId, file);
+    return await this.advertImageService.upload(user.id, params.projectId, file);
   }
 
-  @Delete('/:objectId/:imageId')
+  @Delete('/:projectId/:imageId')
   @UseGuards(AuthGuard('jwt'))
   async delete(
     @Request() req,
@@ -29,6 +29,6 @@ export class AdvertImageController {
   ) {
     const { user } = req;
 
-    return await this.advertImageService.delete(user.id, params.objectId, params.imageId);
+    return await this.advertImageService.delete(user.id, params.projectId, params.imageId);
   }
 }
