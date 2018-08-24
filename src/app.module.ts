@@ -20,7 +20,7 @@ const PG_CONFIG = parse(process.env.DATABASE_URL);
       password: PG_CONFIG.password,
       database: PG_CONFIG.database,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      ssl: true,
+      ssl: process.env.DATABASE_SSL === 'true',
       synchronize: true,
     }),
     AdvertModule,

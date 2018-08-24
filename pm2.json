@@ -12,7 +12,8 @@
 				"S3_ENDPOINT": "ams3.digitaloceanspaces.com",
 				"S3_BUCKET": "content-realthub-com",
 				"AUTH_POLICY_EXPIRES": "2592000",
-				"AUTH_POLICY_SECRET": "_wox8l^61VyWXfZyOefU^^m@q7$xtsN"
+				"AUTH_POLICY_SECRET": "_wox8l^61VyWXfZyOefU^^m@q7$xtsN",
+				"DATABASE_SSL": true
 			},
 			"name": "realthub.com/api",
 			"instances": 1,
