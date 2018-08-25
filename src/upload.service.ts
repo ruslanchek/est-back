@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { Utils } from './utils';
 import * as sharp from 'sharp';
@@ -11,7 +11,7 @@ export interface IFile {
   buffer: Buffer;
 }
 
-export interface IFileTypes {
+export interface IFileType {
   extension: string;
   mimeType: string;
 }
@@ -45,6 +45,8 @@ export const MAX_UPLOAD_SIZE = {
   OBJECT_PICTURE: 26214400, // 25 MB
 };
 
+export const MAX_IMAGES_PER_ADVERT: number = 50;
+
 export const UPLOAD_IMAGE_RESIZE_DIMENSIONS = {
   AVATAR: {
     name: 'default',
@@ -65,7 +67,7 @@ export const UPLOAD_IMAGE_RESIZE_DIMENSIONS = {
   },
 };
 
-export const IMAGE_EXTENSIONS: IFileTypes[] = [
+export const IMAGE_TYPES: IFileType[] = [
   {
     extension: 'jpg',
     mimeType: 'image/jpeg',
@@ -87,9 +89,9 @@ export const IMAGE_EXTENSIONS: IFileTypes[] = [
   },
 ];
 
-const JPEG_QUALITY: number = 85;
-const WEBP_QUALITY: number = 85;
-const BUCKET_URL: string = 'https://content-realthub-com.ams3.digitaloceanspaces.com/';
+const JPEG_QUALITY: number = 90;
+const WEBP_QUALITY: number = 90;
+const BUCKET_URL: string = `https://${process.env.S3_BUCKET}.${process.env.S3_ENDPOINT}/`;
 
 @Injectable()
 export class UploadService {
@@ -109,7 +111,7 @@ export class UploadService {
     let result: boolean = false;
     const ext: string = this.extractExtension(file.originalname);
 
-    IMAGE_EXTENSIONS.forEach(element => {
+    IMAGE_TYPES.forEach(element => {
       if (element.extension === ext && element.mimeType === file.mimetype) {
         result = true;
       }
@@ -226,8 +228,6 @@ export class UploadService {
         name: resizeDimension.name,
         path,
       });
-
-      console.log('uploaded:', resizeDimension.name);
     }
 
     return filesResult;
@@ -291,9 +291,9 @@ export class UploadService {
       return await this.uploadResizeCopies(id, file, location, fileName, resizeDimensions, meta);
 
     } catch (e) {
-      console.log(e);
-
-      return null;
+      throw new HttpException({
+        code: e,
+      }, HttpStatus.BAD_REQUEST);
     }
   }
 }

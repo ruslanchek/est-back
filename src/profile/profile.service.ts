@@ -9,6 +9,7 @@ import { MailingService } from '../mailing.service';
 import { IFile, IFileResult, MAX_UPLOAD_SIZE, UPLOAD_IMAGE_RESIZE_DIMENSIONS, UploadService } from '../upload.service';
 import * as uniqid from 'uniqid';
 import { Advert } from '../advert/advert.entity';
+import { Utils } from '../utils';
 
 const PERSONAL_ENTITY_SELECT_FIELDS: FindOneOptions<Agent> = {
   select: [
@@ -34,156 +35,148 @@ export class ProfileService {
   ) {
   }
 
-  public async getProfile(agentId: number): Promise<IApiResult<IApiResultOne<Agent>>> {
-    try {
+  public async getProfile(agentId): Promise<IApiResult<IApiResultOne<Agent>>> {
+    agentId = Utils.parseId(agentId);
+
+    const entity: Agent = await this.agentServiceRepository.findOne(
+      { id: agentId },
+      PERSONAL_ENTITY_SELECT_FIELDS,
+    );
+
+    if (entity) {
+      return Api.result<IApiResultOne<Agent>>({
+        entity,
+      });
+    } else {
+      return Api.error({
+        status: HttpStatus.NOT_FOUND,
+        code: 'NOT_FOUND',
+      });
+    }
+  }
+
+  public async getAdverts(agentId: number): Promise<IApiResult<IApiResultList<Advert>>> {
+    agentId = Utils.parseId(agentId);
+
+    const list: Advert[] = await this.advertServiceRepository.find({
+      where: {
+        agent: {
+          id: agentId,
+        },
+      },
+
+      order: {
+        id: 'DESC',
+      },
+    });
+
+    return Api.result<IApiResultList<Advert>>({
+      list,
+    });
+  }
+
+  public async update(agentId: number, dto: UpdateProfileDto): Promise<IApiResult<IApiResultOne<Agent>>> {
+    agentId = Utils.parseId(agentId);
+
+    const findResult: Agent = await this.agentServiceRepository.findOne(agentId);
+
+    if (findResult) {
+      await this.agentServiceRepository.update(
+        { id: agentId },
+        dto,
+      );
+      const entity: Agent = await this.agentServiceRepository.findOne(agentId);
+
+      return Api.result<IApiResultOne<Agent>>({
+        entity,
+      });
+    } else {
+      return Api.error({
+        status: HttpStatus.NOT_FOUND,
+        code: 'NOT_FOUND',
+      });
+    }
+  }
+
+  public async updatePassword(agentId, dto: UpdateProfilePasswordDto): Promise<IApiResult<IApiResultOne<Agent>>> {
+    agentId = Utils.parseId(agentId);
+
+    const findResult: Agent = await this.agentServiceRepository.findOne({
+      id: agentId,
+    }, {
+      select: [
+        'password',
+      ],
+    });
+
+    const passwordChecked: boolean = await bcrypt.compare(dto.oldPassword, findResult.password);
+
+    if (passwordChecked) {
+      const hashedPassword: string = await bcrypt.hash(dto.password, 10);
+
+      await this.agentServiceRepository.update(
+        { id: agentId },
+        { password: hashedPassword },
+      );
+
       const entity: Agent = await this.agentServiceRepository.findOne(
         { id: agentId },
         PERSONAL_ENTITY_SELECT_FIELDS,
       );
 
-      if (entity) {
-        return Api.result<IApiResultOne<Agent>>({
-          entity,
-        });
-      } else {
-        return Api.error({
-          status: HttpStatus.NOT_FOUND,
-          code: 'NOT_FOUND',
-        });
-      }
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  public async getAdverts(agentId: number): Promise<IApiResult<IApiResultList<Advert>>> {
-    try {
-      const list: Advert[] = await this.advertServiceRepository.find({
-        where: {
-          agent: {
-            id: agentId,
-          },
-        },
-
-        order: {
-          id: 'DESC',
-        },
+      await this.mailingService.sendPasswordChanged({
+        agentName: entity.name,
+        agentEmail: entity.email,
+        agentId: entity.id,
+        verificationCode: '',
       });
 
-      return Api.result<IApiResultList<Advert>>({
-        list,
+      return Api.result<IApiResultOne<Agent>>({
+        entity,
       });
-    } catch (e) {
-      return Api.unhandled(e, null);
-    }
-  }
-
-  public async update(agentId: number, dto: UpdateProfileDto): Promise<IApiResult<IApiResultOne<Agent>>> {
-    try {
-      const findResult: Agent = await this.agentServiceRepository.findOne(agentId);
-
-      if (findResult) {
-        await this.agentServiceRepository.update(
-          {
-            id: agentId,
-          },
-          dto,
-        );
-        const entity: Agent = await this.agentServiceRepository.findOne(agentId);
-
-        return Api.result<IApiResultOne<Agent>>({
-          entity,
-        });
-      } else {
-        return Api.error({
-          status: HttpStatus.NOT_FOUND,
-          code: 'NOT_FOUND',
-        });
-      }
-    } catch (e) {
-      return Api.unhandled(e, dto);
-    }
-  }
-
-  public async updatePassword(id: number, dto: UpdateProfilePasswordDto): Promise<IApiResult<IApiResultOne<Agent>>> {
-    try {
-      const findResult: Agent = await this.agentServiceRepository.findOne(id, {
-        select: [
-          'password',
-        ],
+    } else {
+      return Api.error({
+        status: HttpStatus.BAD_REQUEST,
+        code: 'WRONG_PASSWORD',
       });
-
-      const passwordChecked: boolean = await bcrypt.compare(dto.oldPassword, findResult.password);
-
-      if (passwordChecked) {
-        const hashedPassword: string = await bcrypt.hash(dto.password, 10);
-        await this.agentServiceRepository.update(
-          { id },
-          { password: hashedPassword },
-        );
-        const entity: Agent = await this.agentServiceRepository.findOne(
-          { id },
-          PERSONAL_ENTITY_SELECT_FIELDS,
-        );
-
-        await this.mailingService.sendPasswordChanged({
-          agentName: entity.name,
-          agentEmail: entity.email,
-          agentId: entity.id,
-          verificationCode: '',
-        });
-
-        return Api.result<IApiResultOne<Agent>>({
-          entity,
-        });
-      } else {
-        return Api.error({
-          status: HttpStatus.BAD_REQUEST,
-          code: 'WRONG_PASSWORD',
-        });
-      }
-    } catch (e) {
-      return Api.unhandled(e, dto);
     }
   }
 
-  public async updateAvatar(id: number, file: IFile): Promise<IApiResult<IApiResultUploadFile>> {
-    try {
-      const imageId: string = uniqid();
-      const fileResult: IFileResult[] = await this.uploadService.uploadImage(
-        id,
-        file,
-        `agents/${id}/`,
+  public async updateAvatar(agentId, file: IFile): Promise<IApiResult<IApiResultUploadFile>> {
+    agentId = Utils.parseId(agentId);
+
+    const imageId: string = uniqid();
+    const fileResult: IFileResult[] = await this.uploadService.uploadImage(
+      agentId,
+      file,
+      `agents/${agentId}/`,
+      imageId,
+      MAX_UPLOAD_SIZE.AVATAR,
+      {
+        entityId: agentId.toString(),
+        entityKind: 'avatar',
+        entityType: 'id',
         imageId,
-        MAX_UPLOAD_SIZE.AVATAR,
-        {
-          entityId: id.toString(),
-          entityKind: 'avatar',
-          entityType: 'id',
-          imageId,
-        },
-        [
-          UPLOAD_IMAGE_RESIZE_DIMENSIONS.AVATAR,
-        ],
+      },
+      [
+        UPLOAD_IMAGE_RESIZE_DIMENSIONS.AVATAR,
+      ],
+    );
+
+    if (fileResult) {
+      await this.agentServiceRepository.update(
+        { id: agentId },
+        { avatar: fileResult[0].path },
       );
 
-      if (fileResult) {
-        await this.agentServiceRepository.update(
-          { id },
-          { avatar: fileResult[0].path },
-        );
-
-        return Api.result<IApiResultUploadFile>({
-          files: fileResult,
-        });
-      } else {
-        return Api.error({
-          status: HttpStatus.BAD_REQUEST,
-          code: 'UPLOAD_ERROR',
-        });
-      }
-    } catch (e) {
-      return Api.unhandled(e, null);
+      return Api.result<IApiResultUploadFile>({
+        files: fileResult,
+      });
+    } else {
+      return Api.error({
+        status: HttpStatus.BAD_REQUEST,
+        code: 'UPLOAD_ERROR',
+      });
     }
   }
 }

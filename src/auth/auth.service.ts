@@ -40,92 +40,76 @@ export class AuthService {
   }
 
   async login(dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
-    try {
-      const entity = await this.findOneByEmail(dto.email);
-      const passwordChecked: boolean = await bcrypt.compare(dto.password, entity.password);
+    const entity = await this.findOneByEmail(dto.email);
+    const passwordChecked: boolean = await bcrypt.compare(dto.password, entity.password);
 
-      if (passwordChecked) {
-        const tokenPayload: ITokenPayload = await this.createToken({
-          id: entity.id,
-        });
+    if (passwordChecked) {
+      const tokenPayload: ITokenPayload = await this.createToken({
+        id: entity.id,
+      });
 
-        if (tokenPayload) {
-          return Api.result<ITokenPayload>(tokenPayload);
-        } else {
-          return Api.error({
-            status: HttpStatus.BAD_REQUEST,
-            code: 'BAD_REQUEST',
-          });
-        }
+      if (tokenPayload) {
+        return Api.result<ITokenPayload>(tokenPayload);
       } else {
         return Api.error({
-          status: HttpStatus.UNAUTHORIZED,
-          code: 'WRONG_CREDENTIALS',
+          status: HttpStatus.BAD_REQUEST,
+          code: 'BAD_REQUEST',
         });
       }
-    } catch (e) {
-      return Api.unhandled(e, dto);
+    } else {
+      return Api.error({
+        status: HttpStatus.UNAUTHORIZED,
+        code: 'WRONG_CREDENTIALS',
+      });
     }
   }
 
   async register(dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
-    try {
-      const entityFound = await this.findOneByEmail(dto.email);
+    const entityFound = await this.findOneByEmail(dto.email);
 
-      if (entityFound) {
-        return Api.error({
-          status: HttpStatus.CONFLICT,
-          code: 'CONFLICT',
-        });
-      } else {
-        const verificationCode: string = await bcrypt.hash(dto.email, 5);
-        const name = dto.email.match(/^([^@]*)@/)[1];
-        const entityNew = await this.insert(Object.assign(dto, { name }));
-        const tokenPayload = await this.createToken({
-          id: entityNew.id,
-        });
+    if (entityFound) {
+      return Api.error({
+        status: HttpStatus.CONFLICT,
+        code: 'CONFLICT',
+      });
+    } else {
+      const verificationCode: string = await bcrypt.hash(dto.email, 5);
+      const name = dto.email.match(/^([^@]*)@/)[1];
+      const entityNew = await this.insert(Object.assign(dto, { name }));
+      const tokenPayload = await this.createToken({
+        id: entityNew.id,
+      });
 
-        await this.mailingService.sendWelcome({
-          agentName: name,
-          agentEmail: dto.email,
-          agentId: entityNew.id,
-          verificationCode,
-        });
+      await this.mailingService.sendWelcome({
+        agentName: name,
+        agentEmail: dto.email,
+        agentId: entityNew.id,
+        verificationCode,
+      });
 
-        return Api.result<ITokenPayload>(tokenPayload);
-      }
-    } catch (e) {
-      return Api.unhandled(e, dto);
+      return Api.result<ITokenPayload>(tokenPayload);
     }
   }
 
   private async findOneByEmail(email: string): Promise<Agent> {
-    try {
-      return await this.agentServiceRepository.findOne({
-        email,
-      }, {
-        select: [
-          'id',
-          'password',
-        ],
-      });
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return await this.agentServiceRepository.findOne({
+      email,
+    }, {
+      select: [
+        'id',
+        'password',
+      ],
+    });
   }
 
   private async insert(dto: AuthDto): Promise<IApiResultCreate> {
-    try {
-      const hashedPassword: string = await bcrypt.hash(dto.password, 10);
-      const result: InsertResult = await this.agentServiceRepository.insert(Object.assign(dto, {
-        password: hashedPassword,
-      }));
+    const hashedPassword: string = await bcrypt.hash(dto.password, 10);
+    const result: InsertResult = await this.agentServiceRepository.insert(Object.assign(dto, {
+      password: hashedPassword,
+    }));
 
-      return {
-        id: result.identifiers[0].id,
-      };
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    return {
+      id: result.identifiers[0].id,
+    };
   }
 }

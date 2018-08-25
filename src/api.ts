@@ -41,14 +41,7 @@ export class Api {
     };
   }
 
-  static error(error: IApiResultError) {
-    throw new HttpException({
-      payload: null,
-      error: {
-        code: error.code,
-        fields: error.fields,
-        details: error.details,
-      }
-    }, error.status);
+  static error<Payload>(error: IApiResultError): IApiResult<Payload> {
+    throw new HttpException(error, error.status);
   }
 }
