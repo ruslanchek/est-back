@@ -13,6 +13,10 @@ export interface IApiResultError {
   details?: any;
 }
 
+export interface IApiResultEnum {
+  enum: string[] | number[];
+}
+
 export interface IApiResultCreate {
   id: number;
 }

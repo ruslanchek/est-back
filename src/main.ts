@@ -8,11 +8,9 @@ async function bootstrap() {
     cors: true,
   });
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  swagger(app);
 
-  if (process.env.NODE_ENV !== 'production') {
-    swagger(app);
-  }
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(process.env.PORT);
 }
