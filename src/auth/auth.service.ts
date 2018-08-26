@@ -42,7 +42,7 @@ export class AuthService {
   async login(dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
     const entity = await this.findOneByEmail(dto.email);
 
-    if(!entity) {
+    if (!entity) {
       return Api.error({
         status: HttpStatus.BAD_REQUEST,
         code: 'BAD_REQUEST',
