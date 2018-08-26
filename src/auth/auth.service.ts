@@ -41,6 +41,14 @@ export class AuthService {
 
   async login(dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
     const entity = await this.findOneByEmail(dto.email);
+
+    if(!entity) {
+      return Api.error({
+        status: HttpStatus.BAD_REQUEST,
+        code: 'BAD_REQUEST',
+      });
+    }
+
     const passwordChecked: boolean = await bcrypt.compare(dto.password, entity.password);
 
     if (passwordChecked) {
