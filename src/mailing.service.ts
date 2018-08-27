@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as sparkPostTransport from 'nodemailer-sparkpost-transport';
 import * as nodemailer from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/smtp-transport';
 import * as Mustache from 'mustache';
@@ -38,14 +39,10 @@ export class MailingService {
 
   constructor() {
     this.templates.transactional = this.loadTemplate('transactional.email.mst');
-
-    this.transport = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: 'ruslanchek@gmail.com',
-        pass: 'gxgkyndjizgnjdah',
-      },
-    });
+    this.transport = nodemailer.createTransport(sparkPostTransport({
+      sparkPostApiKey: 'ad39fe5222a13925b8a6ab524e4ab09f5fe8e58f',
+      endpoint: 'https://api.sparkpost.com',
+    }));
   }
 
   private loadTemplate(fileName: string): string {
