@@ -11,7 +11,7 @@ import { Utils } from '../utils';
 export class AdvertService {
   constructor(
     @InjectRepository(Advert)
-    private readonly advertServiceRepository: Repository<Advert>,
+    private readonly advertRepository: Repository<Advert>,
   ) {
   }
 
@@ -25,7 +25,7 @@ export class AdvertService {
       });
     }
 
-    const entity: Advert = await this.advertServiceRepository.findOne({
+    const entity: Advert = await this.advertRepository.findOne({
       id: parsedId,
       published: true,
     }, {
@@ -48,7 +48,7 @@ export class AdvertService {
   }
 
   public async findAll(): Promise<IApiResult<IApiResultList<Advert>>> {
-    const list: Advert[] = await this.advertServiceRepository.find({
+    const list: Advert[] = await this.advertRepository.find({
       where: {
         published: true,
       },
@@ -63,7 +63,7 @@ export class AdvertService {
   public async insert(agentId, dto: CreateAdvertDto): Promise<IApiResult<IApiResultCreate>> {
     agentId = Utils.parseId(agentId);
 
-    const result: InsertResult = await this.advertServiceRepository.insert(Object.assign(dto, {
+    const result: InsertResult = await this.advertRepository.insert(Object.assign(dto, {
       agent: agentId,
     }));
 
@@ -83,7 +83,7 @@ export class AdvertService {
     agentId = Utils.parseId(agentId);
     advertId = Utils.parseId(advertId);
 
-    const findResult: Advert = await this.advertServiceRepository.findOne(advertId, {
+    const findResult: Advert = await this.advertRepository.findOne(advertId, {
       relations: [
         'agent',
       ],
@@ -91,9 +91,9 @@ export class AdvertService {
 
     if (findResult) {
       if (findResult.agent.id === agentId) {
-        await this.advertServiceRepository.save(Object.assign(findResult, dto));
+        await this.advertRepository.save(Object.assign(findResult, dto));
 
-        const entity: Advert = await this.advertServiceRepository.findOne(findResult.id);
+        const entity: Advert = await this.advertRepository.findOne(findResult.id);
 
         return Api.result<IApiResultOne<Advert>>({
           entity,

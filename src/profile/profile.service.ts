@@ -27,9 +27,9 @@ const PERSONAL_ENTITY_SELECT_FIELDS: FindOneOptions<Agent> = {
 export class ProfileService {
   constructor(
     @InjectRepository(Agent)
-    private readonly agentServiceRepository: Repository<Agent>,
+    private readonly agentRepository: Repository<Agent>,
     @InjectRepository(Advert)
-    private readonly advertServiceRepository: Repository<Advert>,
+    private readonly advertRepository: Repository<Advert>,
     private readonly mailingService: MailingService,
     private readonly uploadService: UploadService,
   ) {
@@ -38,7 +38,7 @@ export class ProfileService {
   public async getProfile(agentId): Promise<IApiResult<IApiResultOne<Agent>>> {
     agentId = Utils.parseId(agentId);
 
-    const entity: Agent = await this.agentServiceRepository.findOne(
+    const entity: Agent = await this.agentRepository.findOne(
       { id: agentId },
       PERSONAL_ENTITY_SELECT_FIELDS,
     );
@@ -58,7 +58,7 @@ export class ProfileService {
   public async getAdverts(agentId: number): Promise<IApiResult<IApiResultList<Advert>>> {
     agentId = Utils.parseId(agentId);
 
-    const list: Advert[] = await this.advertServiceRepository.find({
+    const list: Advert[] = await this.advertRepository.find({
       where: {
         agent: {
           id: agentId,
@@ -78,14 +78,14 @@ export class ProfileService {
   public async update(agentId: number, dto: UpdateProfileDto): Promise<IApiResult<IApiResultOne<Agent>>> {
     agentId = Utils.parseId(agentId);
 
-    const findResult: Agent = await this.agentServiceRepository.findOne(agentId);
+    const findResult: Agent = await this.agentRepository.findOne(agentId);
 
     if (findResult) {
-      await this.agentServiceRepository.update(
+      await this.agentRepository.update(
         { id: agentId },
         dto,
       );
-      const entity: Agent = await this.agentServiceRepository.findOne(agentId);
+      const entity: Agent = await this.agentRepository.findOne(agentId);
 
       return Api.result<IApiResultOne<Agent>>({
         entity,
@@ -101,7 +101,7 @@ export class ProfileService {
   public async updatePassword(agentId, dto: UpdateProfilePasswordDto): Promise<IApiResult<IApiResultOne<Agent>>> {
     agentId = Utils.parseId(agentId);
 
-    const findResult: Agent = await this.agentServiceRepository.findOne({
+    const findResult: Agent = await this.agentRepository.findOne({
       id: agentId,
     }, {
       select: [
@@ -114,12 +114,12 @@ export class ProfileService {
     if (passwordChecked) {
       const hashedPassword: string = await bcrypt.hash(dto.password, 10);
 
-      await this.agentServiceRepository.update(
+      await this.agentRepository.update(
         { id: agentId },
         { password: hashedPassword },
       );
 
-      const entity: Agent = await this.agentServiceRepository.findOne(
+      const entity: Agent = await this.agentRepository.findOne(
         { id: agentId },
         PERSONAL_ENTITY_SELECT_FIELDS,
       );
@@ -164,7 +164,7 @@ export class ProfileService {
     );
 
     if (fileResult) {
-      await this.agentServiceRepository.update(
+      await this.agentRepository.update(
         { id: agentId },
         { avatar: fileResult[0].path },
       );

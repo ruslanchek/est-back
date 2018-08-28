@@ -21,9 +21,9 @@ import { Utils } from '../utils';
 export class AdvertImageService {
   constructor(
     @InjectRepository(AdvertImage)
-    private readonly advertImageServiceRepository: Repository<AdvertImage>,
+    private readonly advertImageRepository: Repository<AdvertImage>,
     @InjectRepository(Advert)
-    private readonly advertServiceRepository: Repository<Advert>,
+    private readonly advertRepository: Repository<Advert>,
     private readonly uploadService: UploadService,
   ) {
 
@@ -34,7 +34,7 @@ export class AdvertImageService {
     advertId = Utils.parseId(advertId);
     imageId = Utils.parseId(imageId);
 
-    const imagesResult: AdvertImage = await this.advertImageServiceRepository.findOne({
+    const imagesResult: AdvertImage = await this.advertImageRepository.findOne({
       id: imageId,
       advert: { id: advertId },
       agent: { id: agentId },
@@ -47,7 +47,7 @@ export class AdvertImageService {
       `${imagesResult.big}.webp`,
     ]);
 
-    await this.advertImageServiceRepository.delete({
+    await this.advertImageRepository.delete({
       id: imageId,
       advert: { id: advertId },
       agent: { id: agentId },
@@ -62,7 +62,7 @@ export class AdvertImageService {
     agentId = Utils.parseId(agentId);
     advertId = Utils.parseId(advertId);
 
-    const findResult: Advert = await this.advertServiceRepository.findOne({
+    const findResult: Advert = await this.advertRepository.findOne({
       id: advertId,
       agent: { id: agentId },
     }, {
@@ -87,7 +87,7 @@ export class AdvertImageService {
         agent: { id: agentId } as Agent,
       };
 
-      const imageInsertResult: InsertResult = await this.advertImageServiceRepository.insert(newEntity);
+      const imageInsertResult: InsertResult = await this.advertImageRepository.insert(newEntity);
 
       if (imageInsertResult && imageInsertResult.identifiers) {
         const imageId: number = imageInsertResult.identifiers[0].id;
@@ -111,7 +111,7 @@ export class AdvertImageService {
         );
 
         if (fileResult) {
-          await this.advertImageServiceRepository.update({ id: imageId }, {
+          await this.advertImageRepository.update({ id: imageId }, {
             big: fileResult.find(f => f.name === 'big').path,
             thumb: fileResult.find(f => f.name === 'thumb').path,
           });

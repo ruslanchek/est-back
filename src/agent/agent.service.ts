@@ -9,12 +9,12 @@ import { Utils } from '../utils';
 export class AgentService {
   constructor(
     @InjectRepository(Agent)
-    private readonly agentServiceRepository: Repository<Agent>,
+    private readonly agentRepository: Repository<Agent>,
   ) {
   }
 
   async findAll(): Promise<IApiResult<IApiResultList<Agent>>> {
-    const list: Agent[] = await this.agentServiceRepository.find();
+    const list: Agent[] = await this.agentRepository.find();
 
     return Api.result<IApiResultList<Agent>>({
       list,
@@ -24,7 +24,7 @@ export class AgentService {
   async findOne(agentId): Promise<IApiResult<IApiResultOne<Agent>>> {
     agentId = Utils.parseId(agentId);
 
-    const entity: Agent = await this.agentServiceRepository.findOne(agentId);
+    const entity: Agent = await this.agentRepository.findOne(agentId);
 
     if (entity) {
       return Api.result<IApiResultOne<Agent>>({

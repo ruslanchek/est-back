@@ -15,7 +15,7 @@ import { AuthDto } from './auth.dto';
 export class AuthService {
   constructor(
     @InjectRepository(Agent)
-    private readonly agentServiceRepository: Repository<Agent>,
+    private readonly agentRepository: Repository<Agent>,
     private readonly mailingService: MailingService,
   ) {
   }
@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   async validateUser(payload: IJwtPayload): Promise<Agent> {
-    return await this.agentServiceRepository.findOne(payload.id);
+    return await this.agentRepository.findOne(payload.id);
   }
 
   async login(dto: AuthDto): Promise<IApiResult<ITokenPayload>> {
@@ -100,7 +100,7 @@ export class AuthService {
   }
 
   private async findOneByEmail(email: string): Promise<Agent> {
-    return await this.agentServiceRepository.findOne({
+    return await this.agentRepository.findOne({
       email,
     }, {
       select: [
@@ -112,7 +112,7 @@ export class AuthService {
 
   private async insert(dto: AuthDto): Promise<IApiResultCreate> {
     const hashedPassword: string = await bcrypt.hash(dto.password, 10);
-    const result: InsertResult = await this.agentServiceRepository.insert(Object.assign(dto, {
+    const result: InsertResult = await this.agentRepository.insert(Object.assign(dto, {
       password: hashedPassword,
     }));
 
