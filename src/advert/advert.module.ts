@@ -6,8 +6,17 @@ import { Advert } from './advert.entity';
 import { MailingService } from '../mailing.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Advert])],
-  providers: [AdvertService, MailingService],
-  controllers: [AdvertController],
+  imports: [
+    TypeOrmModule.forFeature([
+      Advert,
+    ]),
+  ],
+  providers: [
+    AdvertService,
+    MailingService,
+  ],
+  controllers: [
+    AdvertController,
+  ],
 })
 export class AdvertModule {}

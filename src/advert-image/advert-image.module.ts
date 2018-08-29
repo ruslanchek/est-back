@@ -7,10 +7,27 @@ import { AdvertService } from '../advert/advert.service';
 import { AdvertImageController } from './advert-image.controller';
 import { Advert } from '../advert/advert.entity';
 import { AdvertImageService } from './advert-image.service';
+import { AdvertModule } from '../advert/advert.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AdvertImage, Advert])],
-  providers: [AdvertService, MailingService, UploadService, AdvertImageService],
-  controllers: [AdvertImageController],
+  imports: [
+    AdvertModule,
+    TypeOrmModule.forFeature([
+      AdvertImage,
+      Advert,
+    ]),
+  ],
+  providers: [
+    AdvertImageService,
+    MailingService,
+    UploadService,
+  ],
+  controllers: [
+    AdvertImageController,
+  ],
+  exports: [
+    AdvertImageService,
+  ],
 })
-export class AdvertImageModule {}
+export class AdvertImageModule {
+}

@@ -8,8 +8,23 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Agent } from '../agent/agent.entity';
 
 @Module({
-  imports: [AgentModule, TypeOrmModule.forFeature([Agent])],
-  controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, MailingService],
+  imports: [
+    AgentModule,
+    TypeOrmModule.forFeature([
+      Agent,
+    ]),
+  ],
+  controllers: [
+    AuthController,
+  ],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    MailingService,
+  ],
+  exports: [
+    AuthService,
+  ],
 })
-export class AuthModule {}
+export class AuthModule {
+}

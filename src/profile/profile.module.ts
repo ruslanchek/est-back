@@ -27,6 +27,9 @@ import { Advert } from '../advert/advert.entity';
     ProfileService,
     UploadService,
   ],
+  exports: [
+    ProfileService,
+  ],
 })
 export class ProfileModule {
 }

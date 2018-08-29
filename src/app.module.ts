@@ -7,7 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { parse } from 'pg-connection-string';
 import { ProfileModule } from './profile/profile.module';
 import { AdvertImageModule } from './advert-image/advert-image.module';
-import { EnumModule } from './enums/advert.module';
+import { EnumModule } from './enum/enum.module';
 
 const PG_CONFIG = parse(process.env.DATABASE_URL);
 

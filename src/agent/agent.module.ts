@@ -6,9 +6,21 @@ import { Agent } from './agent.entity';
 import { MailingService } from '../mailing.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Agent])],
-  providers: [AgentService, MailingService],
-  controllers: [AgentController],
-  exports: [AgentService],
+  imports: [
+    TypeOrmModule.forFeature([
+      Agent,
+    ]),
+  ],
+  providers: [
+    AgentService,
+    MailingService,
+  ],
+  controllers: [
+    AgentController,
+  ],
+  exports: [
+    AgentService,
+  ],
 })
-export class AgentModule {}
+export class AgentModule {
+}
