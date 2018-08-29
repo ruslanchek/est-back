@@ -3,7 +3,11 @@ import { EnumController } from './enum.controller';
 import { EnumService } from './enum.service';
 
 @Module({
-  providers: [EnumService],
-  controllers: [EnumController],
+  providers: [
+    EnumService,
+  ],
+  controllers: [
+    EnumController,
+  ],
 })
 export class EnumModule {}
