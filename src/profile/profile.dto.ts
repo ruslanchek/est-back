@@ -1,15 +1,17 @@
 import { EAgentType } from '../agent/agent.enum';
-import { IsEmail, IsEnum, IsOptional, IsString, Length } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { AUTH_POLICY } from '../auth/auth.policy';
 
 export class UpdateProfileDto {
   @IsString()
+  @IsNotEmpty()
   @ApiModelProperty()
   readonly name: string;
 
   @IsEnum(EAgentType)
   @IsOptional()
+  @IsNotEmpty()
   @ApiModelProperty({
     required: false,
     enum: EAgentType,

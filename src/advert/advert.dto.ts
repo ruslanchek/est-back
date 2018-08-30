@@ -5,12 +5,14 @@ import { Agent } from '../agent/agent.entity';
 
 export class CreateAdvertDto {
   @IsString()
+  @IsNotEmpty()
   @ApiModelProperty({
     required: true,
   })
   readonly title: string;
 
   @IsEnum(EAdvertType)
+  @IsNotEmpty()
   @ApiModelProperty({
     required: true,
     enum: EAdvertType,
@@ -18,6 +20,7 @@ export class CreateAdvertDto {
   readonly type: string;
 
   @IsEnum(EAdvertContractType)
+  @IsNotEmpty()
   @ApiModelProperty({
     required: true,
     enum: EAdvertContractType,
@@ -26,6 +29,7 @@ export class CreateAdvertDto {
 
   @IsInt()
   @IsOptional()
+  @IsNotEmpty()
   @ApiModelProperty({
     required: false,
   })
@@ -41,6 +45,7 @@ export class CreateAdvertDto {
 export class UpdateAdvertDto {
   @IsString()
   @IsOptional()
+  @IsNotEmpty()
   @ApiModelProperty({
     required: false,
   })
@@ -48,6 +53,7 @@ export class UpdateAdvertDto {
 
   @IsEnum(EAdvertType)
   @IsOptional()
+  @IsNotEmpty()
   @ApiModelProperty({
     required: true,
     enum: EAdvertType,
@@ -56,6 +62,7 @@ export class UpdateAdvertDto {
 
   @IsEnum(EAdvertContractType)
   @IsOptional()
+  @IsNotEmpty()
   @ApiModelProperty({
     required: true,
     enum: EAdvertContractType,
@@ -64,6 +71,7 @@ export class UpdateAdvertDto {
 
   @IsInt()
   @IsOptional()
+  @IsNotEmpty()
   @ApiModelProperty({
     required: false,
   })
