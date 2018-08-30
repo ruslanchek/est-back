@@ -56,6 +56,24 @@ sudo sh -c "openssl passwd -apr1 >> /etc/nginx/.htpasswd"
 ```
 
 ##Nginx config
+`sudo nano /etc/nginx/nginx.conf`
+
+```
+ssl_prefer_server_ciphers on;
+ssl_ciphers EECDH+CHACHA20:EECDH+AES128:RSA+AES128:EECDH+AES256:RSA+AES256:EECDH+3DES:RSA+3DES:!MD5;
+
+gzip on;
+gzip_disable "msie6";
+
+gzip_vary on;
+gzip_proxied any;
+gzip_comp_level 6;
+gzip_buffers 16 8k;
+gzip_http_version 1.1;
+gzip_min_length 256;
+gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/vnd.ms-fontobject application/x-font-ttf font/opentype image/svg+xml image/x-icon;
+```
+
 `sudo nano /etc/nginx/sites-available/default`
 
 ```
@@ -70,6 +88,7 @@ server {
 
 server {
     listen 443 ssl;
+    listen [::]:443 ssl;
 
     server_name www.realthub.com;
     
@@ -80,7 +99,8 @@ server {
 }
 
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
 
     server_name realthub.com;
     ssl_certificate /etc/nginx/ssl/realthub.crt;
