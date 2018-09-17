@@ -8,6 +8,7 @@ import { parse } from 'pg-connection-string';
 import { ProfileModule } from './profile/profile.module';
 import { AdvertImageModule } from './advert-image/advert-image.module';
 import { EnumModule } from './enum/enum.module';
+import { FakerModule } from './faker/faker.module';
 
 const PG_CONFIG = parse(process.env.DATABASE_URL);
 
@@ -30,6 +31,7 @@ const PG_CONFIG = parse(process.env.DATABASE_URL);
     ProfileModule,
     AuthModule,
     EnumModule,
+    FakerModule,
   ],
 })
 export class ApplicationModule implements NestModule {
