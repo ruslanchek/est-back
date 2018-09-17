@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Patch, Post, Body, Request, UseGuards, UsePipes } from '@nestjs/common';
-import { FakerService, IObject, IPreset } from './faker.service';
+import { FakerService, IAdvert, IPreset } from './faker.service';
+import { Api, IApiResult, IApiResultList } from '../api';
 
 const GENERATE_OBJECTS_COUNT: number = 11;
 const GENERATE_PRESETS_COUNT: number = 5;
@@ -11,23 +12,27 @@ export class FakerController {
 
   @Get('presets')
   async presets() {
-    const presets: IPreset[] = [];
+    const list: IPreset[] = [];
 
     for (let i: number = 1; i < GENERATE_PRESETS_COUNT; i++) {
-      presets.push(this.fakerService.generatePreset());
+      list.push(this.fakerService.generatePreset());
     }
 
-    return presets;
+    return Api.result<IApiResultList<IPreset>>({
+      list,
+    });
   }
 
   @Get('adverts')
   async adverts() {
-    const objects: IObject[] = [];
+    const list: IAdvert[] = [];
 
     for (let i: number = 1; i < GENERATE_OBJECTS_COUNT; i++) {
-      objects.push(this.fakerService.generateObject(i));
+      list.push(this.fakerService.generateAdvert(i));
     }
 
-    return objects;
+    return Api.result<IApiResultList<IAdvert>>({
+      list,
+    });
   }
 }

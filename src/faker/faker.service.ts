@@ -20,11 +20,11 @@ export interface IPreset {
   color2: string;
 }
 
-export interface IObject {
+export interface IAdvert {
   id: number;
   title: string;
-  type: EObjectType;
-  contractType: EObjectContractType;
+  type: EAdvertType;
+  contractType: EAdvertContractType;
   constructionDate: Date;
   price: number;
   address: IAddress;
@@ -85,14 +85,14 @@ export interface IObjectPicture {
   src: string;
 }
 
-export enum EObjectType {
+export enum EAdvertType {
   DetachedHouse,
   TownHouse,
   Flat,
   Studio,
 }
 
-export enum EObjectContractType {
+export enum EAdvertContractType {
   Purchase,
   Rent,
 }
@@ -177,7 +177,7 @@ export class FakerService {
     };
   }
 
-  public generateObject(objectId: number): IObject {
+  public generateAdvert(objectId: number): IAdvert {
     const params: IObjectParam[] = [];
 
     params.push(
@@ -214,14 +214,14 @@ export class FakerService {
       id: objectId,
       title: faker.name.title(),
       type: faker.random.arrayElement([
-        EObjectType.Flat,
-        EObjectType.DetachedHouse,
-        EObjectType.TownHouse,
-        EObjectType.Studio,
+        EAdvertType.Flat,
+        EAdvertType.DetachedHouse,
+        EAdvertType.TownHouse,
+        EAdvertType.Studio,
       ]),
       contractType: faker.random.arrayElement([
-        EObjectContractType.Rent,
-        EObjectContractType.Purchase,
+        EAdvertContractType.Rent,
+        EAdvertContractType.Purchase,
       ]),
       constructionDate: faker.date.past(20),
       price: faker.random.number({ min: 50000, max: 1500000, precision: 2 }),
