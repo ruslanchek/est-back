@@ -18,6 +18,7 @@ export interface IPreset {
   price: number;
   color1: string;
   color2: string;
+  pattern: ESpecialBrickPattern;
 }
 
 export interface IAdvert {
@@ -103,6 +104,13 @@ export enum EObjectAgentType {
   Agency,
 }
 
+export enum ESpecialBrickPattern {
+  Circles = 'circles',
+  Stripes = 'stripes',
+  Pluses = 'pluses',
+  Waves = 'waves',
+}
+
 @Injectable()
 export class FakerService {
   constructor() {
@@ -174,6 +182,12 @@ export class FakerService {
       price: faker.random.number({min: 1000, max: 5000}),
       color1: faker.internet.color(),
       color2: faker.internet.color(),
+      pattern: faker.random.arrayElement([
+        ESpecialBrickPattern.Pluses,
+        ESpecialBrickPattern.Circles,
+        ESpecialBrickPattern.Stripes,
+        ESpecialBrickPattern.Waves,
+      ]),
     };
   }
 
