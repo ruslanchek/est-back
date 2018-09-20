@@ -111,6 +111,16 @@ export enum ESpecialBrickPattern {
   Waves = 'waves',
 }
 
+const SPECIAL_COLORS: string[][] = [
+  ['#AE6FE3', '#363DB4'],
+  ['#58C2C8', '#4D4AB1'],
+  ['#EDA8FF', '#597AFF'],
+  ['#AEDEAF', '#1482B1'],
+  ['#C77DAE', '#7A34F3'],
+  ['#FDA786', '#FF5C7B'],
+  ['#5BA3E4', '#73D9C4'],
+];
+
 @Injectable()
 export class FakerService {
   constructor() {
