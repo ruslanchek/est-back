@@ -186,12 +186,14 @@ export class FakerService {
   }
 
   public generatePreset(): IPreset {
+    const colorPair = faker.random.arrayElement(SPECIAL_COLORS);
+
     return {
-      id: faker.random.number({min: 1, max: 1000}),
+      id: faker.random.number({ min: 1, max: 1000 }),
       title: faker.random.words(2),
-      price: faker.random.number({min: 1000, max: 5000}),
-      color1: faker.internet.color(),
-      color2: faker.internet.color(),
+      price: faker.random.number({ min: 1000, max: 5000 }),
+      color1: colorPair[0],
+      color2: colorPair[1],
       pattern: faker.random.arrayElement([
         ESpecialBrickPattern.Pluses,
         ESpecialBrickPattern.Circles,
