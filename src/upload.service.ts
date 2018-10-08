@@ -92,6 +92,7 @@ export const IMAGE_TYPES: IFileType[] = [
 const JPEG_QUALITY: number = 90;
 const WEBP_QUALITY: number = 90;
 const BUCKET_URL: string = `https://${process.env.S3_BUCKET}.${process.env.S3_ENDPOINT}/`;
+const CDN_URL: string = `https://${process.env.S3_CDN_ADDRESS}`;
 
 @Injectable()
 export class UploadService {
