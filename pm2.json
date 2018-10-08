@@ -10,8 +10,8 @@
 				"S3_KEY": "AYN4EVFWKFB2TSX2WLFX",
 				"S3_SECRET": "KfYRDaoQPfJsA4dEsPF1PanU+OWF32sqvKJpbffqODI",
 				"S3_ENDPOINT": "ams3.digitaloceanspaces.com",
-				"S3_CDN_ADDRESS": "https://static-realthub-com.ams3.cdn.digitaloceanspaces.com/",
 				"S3_BUCKET": "content-realthub-com",
+				"S3_CDN_ADDRESS": "https://static-realthub-com.ams3.cdn.digitaloceanspaces.com/",
 				"AUTH_POLICY_EXPIRES": "2592000",
 				"AUTH_POLICY_SECRET": "_wox8l^61VyWXfZyOefU^^m@q7$xtsN",
 				"DATABASE_SSL": true
